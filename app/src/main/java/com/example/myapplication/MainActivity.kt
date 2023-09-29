@@ -30,7 +30,6 @@ class MainActivity : AppCompatActivity() {
 
     // Initialisez Retrofit avec le convertisseur Gson
     private lateinit var cardViewModel: CardViewModel
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -43,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = cardAdapter
 
-        val adapter = CardAdaptater(emptyList()) // Utilisez votre propre adaptateur
+        val adapter = CardAdaptater(emptyList())
         recyclerView.adapter = adapter
 
         val hearthstoneApiService = retrofit.create(ApiService::class.java)
@@ -58,6 +57,7 @@ class MainActivity : AppCompatActivity() {
 
         cardViewModel.fetchCards()
 
+        /*
        APIDataSource.hearthstoneApiService.getCards().enqueue { response, throwable ->
             if (response != null && response.isSuccessful) {
                 // Traitez la réponse ici
@@ -98,6 +98,8 @@ class MainActivity : AppCompatActivity() {
                 callback(null, t)
             }
         })
+
+         */
     }
 
 

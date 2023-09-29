@@ -8,7 +8,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object APIDataSource {
-
     val intercepter = HttpLoggingInterceptor().apply {
         this.level = HttpLoggingInterceptor.Level.BODY
     }
@@ -23,5 +22,4 @@ object APIDataSource {
         .addConverterFactory(GsonConverterFactory.create(gson))
         .build()
     val hearthstoneApiService = retrofit.create(ApiService::class.java)
-
 }
