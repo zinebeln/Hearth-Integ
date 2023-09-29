@@ -6,8 +6,8 @@ import com.example.myapplication.Card
 import com.example.myapplication.repository.HearthstoneRepository
 
 class CardViewModel(private val repository: HearthstoneRepository) : ViewModel() {
-    private val _cardsLiveData = MutableLiveData<List<Card>>()
-    val cardsLiveData: MutableLiveData<List<Card>> = _cardsLiveData
+    private val _cardsLiveData = MutableLiveData<List<String>>()
+    val cardsLiveData: MutableLiveData<List<String>> = _cardsLiveData
 
     fun fetchCards() {
         repository.getCards { cards, error ->

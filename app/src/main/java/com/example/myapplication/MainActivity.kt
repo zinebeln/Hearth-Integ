@@ -13,6 +13,7 @@ import retrofit2.Callback
 
 
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.myapplication.dataSource.APIDataSource
@@ -25,7 +26,7 @@ class MainActivity : AppCompatActivity() {
 
     //val retrofit = Retrofit.Builder()
       //  .baseUrl("https://omgvamp-hearthstone-v1.p.rapidapi.com/info/?rapidapi-key=83de557c75mshf10e086e2ef22f9p1eb351jsnebdd8be1665d")
-    //    .addConverterFactory(GsonConverterFactory.create())
+      //    .addConverterFactory(GsonConverterFactory.create())
       //  .build()
 
     // Initialisez Retrofit avec le convertisseur Gson
@@ -53,6 +54,8 @@ class MainActivity : AppCompatActivity() {
         cardViewModel.cardsLiveData.observe(this, Observer { cards ->
             // Mettez à jour votre adaptateur avec les données
             //adapter.updateData(cards)
+
+            Toast.makeText(this, cards.toString(), Toast.LENGTH_SHORT).show()
         })
 
         cardViewModel.fetchCards()
