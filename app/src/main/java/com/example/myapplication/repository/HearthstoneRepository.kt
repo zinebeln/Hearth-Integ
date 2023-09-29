@@ -8,10 +8,11 @@ import retrofit2.Call
 import retrofit2.Response
 
 class HearthstoneRepository(private val hearthstoneApiService: ApiService) {
-    fun getCards(callback: (List<Card>?, Throwable?) -> Unit) {
+    fun getCards(callback: (List<String>?, Throwable?) -> Unit) {
         APIDataSource.hearthstoneApiService.getCards().enqueue { response, throwable ->
             if (response != null && response.isSuccessful) {
                 val cards = response.body()
+                callback(cards?.classes, null)
                 Log.d("API_INFO", "Version: ${response.body()?.patch}")
                 if (cards != null) {
                     Log.d("API_INFO", "Patch: ${response}")
