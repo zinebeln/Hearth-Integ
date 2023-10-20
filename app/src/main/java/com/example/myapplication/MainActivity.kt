@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
@@ -13,6 +14,7 @@ import retrofit2.Callback
 
 
 import android.util.Log
+import android.widget.Button
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -37,11 +39,12 @@ class MainActivity : AppCompatActivity() {
 
         val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
         val cardList: MutableList<Card> = ArrayList()
-        val cardAdapter = CardAdaptater(cardList)
+       // val cardAdapter = CardAdaptater(cardList)
+        val button : Button = findViewById(R.id.openCardListButton)
 
         val layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
-        recyclerView.adapter = cardAdapter
+        //recyclerView.adapter = cardAdapter
 
         val adapter = CardAdaptater(emptyList())
         recyclerView.adapter = adapter
@@ -51,14 +54,33 @@ class MainActivity : AppCompatActivity() {
 
         cardViewModel = ViewModelProvider(this, CardViewModelFactory(repository)).get(CardViewModel::class.java)
 
-        cardViewModel.cardsLiveData.observe(this, Observer { cards ->
+       /* cardViewModel.cardsLiveData.observe(this, Observer { cards ->
             // Mettez à jour votre adaptateur avec les données
             //adapter.updateData(cards)
+            if (cards != null ) {
+                // Par exemple, utilisez une RecyclerView pour afficher la liste de cartes.
+                val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
+                recyclerView.layoutManager = LinearLayoutManager(this)
+                recyclerView.adapter = CardAdaptater(cardList)
+
+            }
+
+
+
 
             Toast.makeText(this, cards.toString(), Toast.LENGTH_SHORT).show()
         })
-
+   */
         cardViewModel.fetchCards()
+
+        button.setOnClickListener{
+            // Code pour ouvrir une nouvelle activité ou fragment ici.
+            // Par exemple, pour ouvrir une nouvelle activité :
+            val intent = Intent(this, CardEnum::class.java)
+            startActivity(intent)
+
+        }
+
 
         /*
        APIDataSource.hearthstoneApiService.getCards().enqueue { response, throwable ->
