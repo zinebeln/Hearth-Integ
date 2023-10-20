@@ -18,4 +18,6 @@ class CardViewModel(private val repository: HearthstoneRepository) : ViewModel()
             }
         }
     }
+
+
 }
