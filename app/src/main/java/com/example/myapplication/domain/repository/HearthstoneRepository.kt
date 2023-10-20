@@ -1,13 +1,22 @@
-package com.example.myapplication.repository
+package com.example.myapplication.domain.repository
 
 import android.util.Log
 import com.example.myapplication.dataSource.APIDataSource
-import com.example.myapplication.ApiService
-import com.example.myapplication.Card
+import com.example.myapplication.domain.ApiService
+import com.example.myapplication.model.Infos
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import retrofit2.Call
 import retrofit2.Response
 
 class HearthstoneRepository(private val hearthstoneApiService: ApiService) {
+
+    suspend fun getCards2(): Flow<Infos> = flow {
+        val toto = APIDataSource.hearthstoneApiService.getCards2()
+        emit(toto)
+        Log.d("API_INFO", "All info: ${toto}")
+
+    }
     fun getCards(callback: (List<String>?, Throwable?) -> Unit) {
         APIDataSource.hearthstoneApiService.getCards().enqueue { response, throwable ->
             if (response != null && response.isSuccessful) {
