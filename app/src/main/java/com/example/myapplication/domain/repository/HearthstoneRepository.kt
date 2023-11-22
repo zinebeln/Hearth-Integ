@@ -14,7 +14,7 @@ class HearthstoneRepository(private val hearthstoneApiService: ApiService) {
     suspend fun getCards2(): Flow<Infos> = flow {
         val toto = APIDataSource.hearthstoneApiService.getCards2()
         emit(toto)
-        Log.d("API_INFO", "All info: ${toto}")
+        Log.d("API_INFO", "All info in getCards2 hearth: ${toto}")
 
     }
     fun getCards(callback: (List<String>?, Throwable?) -> Unit) {

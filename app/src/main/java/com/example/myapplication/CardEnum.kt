@@ -30,7 +30,7 @@ class CardEnum : AppCompatActivity() {
         infoViewModel = ViewModelProvider(this, viewModelFactory).get(CardViewModel::class.java)
 
         // Appelez la méthode fetchCards pour récupérer les données
-        infoViewModel.fetchCards()
+        infoViewModel.fetchCards2()
 
         // Configurez votre interface utilisateur pour afficher les données dans le LiveData de cardViewModel.
         infoViewModel.cardsLiveData.observe(this, Observer { cards ->

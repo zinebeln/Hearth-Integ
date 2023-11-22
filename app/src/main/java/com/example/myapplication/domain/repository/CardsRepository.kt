@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.myapplication.domain.CardDataService
 import com.example.myapplication.dataSource.CardSource
 import com.example.myapplication.model.Card
+import com.example.myapplication.model.Cards
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.Call
@@ -11,19 +12,26 @@ import retrofit2.Response
 
 class CardsRepository(private val CardApiService: CardDataService) {
 
-    suspend fun getCards(): Flow<Card> = flow {
+    suspend fun getCards(): Flow<Cards> = flow {
         val toto = CardSource.cardSource.getCardsData2()
-        emit(toto)
-        Log.d("API_INFO", "All cards: ${toto}")
 
+        if (toto.isSuccessful) {
+            val test = toto.body()?.Basic
+            emit(toto.body() ?: Cards())
+        }
+
+
+        Log.d("API_INFO", "All cards in getCards cardrepository: ${toto}")
+        //Log.d("API_INFO", "test: ${test}")
     }
+
 
         fun getAllCards(callback: (String?, Throwable?) -> Unit) {
                 CardSource.cardSource.getCardsData().enqueue { response, throwable ->
                 if (response != null && response.isSuccessful) {
                     val cards = response.body()
-                    callback(cards?.classes, null)
-                    Log.d("API_INFO", "Types: ${response.body()?.types}")
+                    callback(cards?.cardId, null)
+                    Log.d("API_INFO", "Types: ${response.body()?.cardId}")
                     if (cards != null) {
                         Log.d("API_INFO", "All cards: ${response}")
                     }
