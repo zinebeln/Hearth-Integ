@@ -1,34 +1,25 @@
 package com.example.myapplication
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-
-
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import android.view.ViewGroup
 
 
 import android.widget.Button
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.room.Room
+import androidx.lifecycle.lifecycleScope
 import com.example.myapplication.dataSource.APIDataSource
-import com.example.myapplication.dataSource.APIDataSource.retrofit
-import com.example.myapplication.domain.ApiService
 import com.example.myapplication.domain.CardDataService
 import com.example.myapplication.model.ViewModel.CardViewModel
 import com.example.myapplication.model.ViewModel.InfoViewModel
 import com.example.myapplication.domain.repository.CardsRepository
-import com.example.myapplication.domain.repository.HearthstoneRepository
 import com.example.myapplication.factory.AllCardViewModel
-import com.example.myapplication.factory.CardViewModelFactory
-import com.example.myapplication.model.Card
-import com.example.myapplication.model.CardsList
 import com.example.myapplication.ui.CardFragment
 import dataBase.AppDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
@@ -87,55 +78,43 @@ class MainActivity : AppCompatActivity() {
        // }
 
 
+
+
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-            var t : List<Card>;
+
         val buttonOpenFragment = findViewById<Button>(R.id.buttonOpenFragment)
 
-            var cardsList: CardsList
-
-            var test : List<String>
             val car = APIDataSource.retrofit.create(CardDataService::class.java)
             val repository = CardsRepository(car)
             val viewModelFactory = AllCardViewModel(repository)
             infoViewModelCard = ViewModelProvider(this, viewModelFactory).get(CardViewModel::class.java)
             infoViewModelCard.fetchCards2()
-            infoViewModelCard.cardsList.observe(this, Observer { cards ->
-                if (cards != null) {
-                   // val cardList = CardsList(cards.map { Card(it, "", "", "", "", "", "", "", "", "") })
-                    t = cards
-                    Log.d("API_SUCCESS", "Appel boutton : ${cards}")
-                    Log.d("API_SUCCESS", "Appel boutton : ${cards.first()}")
+
+
+        // Observer les changements de la liste de cartes ici
+        infoViewModelCard.cardsList.observe(this, Observer { cards ->
+            if (cards != null) {
+                buttonOpenFragment.setOnClickListener {
+                    val fragmentManager = supportFragmentManager
+                    val fragmentTransaction = fragmentManager.beginTransaction()
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        val data = AppDatabase.getDatabase().cardDao().getCardsData2()
+                        if (data.isEmpty()) {
+                            AppDatabase.getDatabase().cardDao().insertCards(cards)
+                        }
+                        lifecycleScope.launch(Dispatchers.Main) {
+                            val fragment = CardFragment.newInstance(data.firstOrNull())
+                            fragmentTransaction.replace(R.id.fragmentContainer, fragment)
+                            fragmentTransaction.addToBackStack(null)
+                            fragmentTransaction.commit()
+                        }
+
+                    }
                 }
-
-            })
-
-
-        buttonOpenFragment.setOnClickListener {
-
-            // Créez un FragmentTransaction
-            val fragmentManager = supportFragmentManager
-            val fragmentTransaction = fragmentManager.beginTransaction()
-
-            // Instanciez le fragment que vous souhaitez afficher
-           // val fragment = CardFragment.newInstance()
-
-            // Ajoutez le fragment à la transaction (utilisez "R.id.fragmentContainer" comme conteneur)
-           // fragmentTransaction.replace(R.id.fragmentContainer, fragment)
-
-            fragmentTransaction.addToBackStack(null) // Ajoute le fragment à la pile de retour
-
-            // Effectuez la transaction
-            fragmentTransaction.commit()
-
-        }
-
-
-
-
-
-
-
+            }
+        })
 
 
     }

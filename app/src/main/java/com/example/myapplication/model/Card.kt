@@ -2,6 +2,7 @@ package com.example.myapplication.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.io.Serializable
@@ -65,7 +66,8 @@ import java.io.Serializable
 //        }
 //    }
 
-@Entity
+
+@Entity(tableName = "Card")
 data class Card(
     @PrimaryKey val cardId: String = "popo",
     val dbfId: Int,
@@ -81,7 +83,8 @@ data class Card(
     val flavor: String?,
     val faction: String?,
     val rarity: String?,
-    val mechanics: List<Mechanic>?,
+    @ColumnInfo(name = "img") val img: String?,
+//    val mechanics: List<Mechanic>?,
     val spellSchool: String?,
     val race: String?,
     val elite: Boolean?

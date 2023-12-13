@@ -14,15 +14,19 @@ class CardsRepository(private val CardApiService: CardDataService) {
 
     suspend fun getCards(): Flow<Cards> = flow {
         val toto = CardSource.cardSource.getCardsData2()
-
+        val cards = toto.body() ?: Cards()
         if (toto.isSuccessful) {
-            val test = toto.body()?.Basic
-            emit(toto.body() ?: Cards())
+//            val test = toto.body()?.Basic
+//            emit(toto.body() ?: Cards())
+//            val cards = toto.body() ?: Cards()
+            val cardsWithImages = cards.Basic.filter { it.img != null }
+            emit(cards.copy(Basic = cardsWithImages))
+            Log.d("API_INFO", "test: ${cards}")
+            Log.d("API_INFO", "cardrepository: ${cardsWithImages}")
+        } else {
+            emit(Cards())
         }
-
-
         Log.d("API_INFO", "All cards in getCards cardrepository: ${toto}")
-        //Log.d("API_INFO", "test: ${test}")
     }
 
 

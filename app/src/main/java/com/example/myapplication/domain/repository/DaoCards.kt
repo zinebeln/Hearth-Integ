@@ -9,7 +9,7 @@ import com.example.myapplication.model.Cards
 @Dao
 interface DaoCards {
 
-    @Query("SELECT * FROM Card")
+    @Query("SELECT * FROM Card LIMIT 500")
     fun getCardsData2():List<Card>
 
     @Insert

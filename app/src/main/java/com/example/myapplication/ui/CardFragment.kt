@@ -1,92 +1,72 @@
 package com.example.myapplication.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.CardAdaptater
-import com.example.myapplication.MainActivity
 import com.example.myapplication.R
-import com.example.myapplication.domain.CardDataService
 import com.example.myapplication.model.Card
-import com.example.myapplication.ui.adaptater.AdapterCards
-
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-
+import dataBase.AppDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 class CardFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    // Déclarez la RecyclerView en tant que membre de classe
     private lateinit var recyclerView: RecyclerView
-
-    private lateinit var cardDao: CardDataService
-
+    private var cardDao = AppDatabase.getDatabase().cardDao()
+    private lateinit var cardAdapter: CardAdaptater
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
         setHasOptionsMenu(true)
-
-        // Initialiser le DAO
-//        val db = (requireActivity().application as MainActivity).db
-//        cardDao = db.cardDao()
     }
-
-    private fun getCards() {
-//        val cards: List<Card> = cardDao.getCardsData()
-
-        // Maintenant, 'cards' contient la liste des cartes récupérées depuis la base de données
-        // Utilisez cette liste pour afficher les cartes dans votre RecyclerView, par exemple
-    }
-
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.fragment_menu, menu)
     }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_back -> {
-
-              //  requireActivity().onBackPressed()
-                parentFragmentManager.popBackStack() // Cela reviendra à la page précédente
+                parentFragmentManager.popBackStack()
                 return true
             }
             else -> return super.onOptionsItemSelected(item)
         }
     }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_card, container, false)
-        // Initialisez la RecyclerView ici
         recyclerView = view.findViewById(R.id.cardRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(context)
+      //  throw RuntimeException("Test Crash")
 
-        // Récupérer les données de la carte depuis les arguments du fragment
-        val card: Card? = arguments?.getSerializable("CARD_DATA") as? Card
+        lifecycleScope.launch {
+            try {
+                val cards = withContext(Dispatchers.IO) {
+                    cardDao.getCardsData2()
+                }
+                cardAdapter = CardAdaptater(cards)
 
-        // Afficher les données de la carte dans les composants d'interface utilisateur (par exemple, TextView)
-       // view.findViewById<TextView>(R.id.textViewCardName).text = card?.name
-        // view.findViewById<TextView>(R.id.textViewCardType).text = card?.type
-       // recyclerView.adapter = CardAdaptater(cards) // Ici, "cards" est la liste de cartes que vous souhaitez afficher
-       // recyclerView.adapter = AdapterCards(cards)
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_card, container, false)
+                Log.d("API_SUCCESS", "taille : ${cardAdapter.itemCount}")
+                Log.d("API_SUCCESS", "Appel boutton : ${cards}")
+                lifecycleScope.launch(Dispatchers.Main) {
+                    recyclerView.adapter = cardAdapter
+                    cardAdapter.notifyDataSetChanged()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        return view;
     }
+
 
     companion object {
         /**
@@ -106,7 +86,7 @@ class CardFragment : Fragment() {
 //                    putString(ARG_PARAM2, param2)
 //                }
 //            }
-        fun newInstance(card: Card): CardFragment {
+        fun newInstance(card: Card?): CardFragment {
             val fragment = CardFragment()
             val args = Bundle()
             args.putSerializable("CARD_DATA", card)

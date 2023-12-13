@@ -25,6 +25,7 @@ class AdapterCards (private val cards: CardsList) : RecyclerView.Adapter<Adapter
 
     override fun getItemCount(): Int {
         TODO("Not yet implemented")
+        return cards.cardList.size
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
