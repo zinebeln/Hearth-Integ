@@ -21,29 +21,5 @@ class CardEnum : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.card_item_layout)
 
-        val car = APIDataSource.retrofit.create(CardDataService::class.java)
-        val repository = CardsRepository(car)
-
-        val cardList: MutableList<String> = ArrayList()
-
-//        val viewModelFactory = AllCardViewModel(repository)
-//        infoViewModel = ViewModelProvider(this, viewModelFactory).get(CardViewModel::class.java)
-//
-//        // Appelez la méthode fetchCards pour récupérer les données
-//        infoViewModel.fetchCards2()
-//
-//        // Configurez votre interface utilisateur pour afficher les données dans le LiveData de cardViewModel.
-//        infoViewModel.cardsLiveData.observe(this, Observer { cards ->
-//            // Mettez à jour l'interface utilisateur avec les données
-//            if (cards != null) {
-//                // Par exemple, utilisez une RecyclerView pour afficher les cartes.
-//                val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
-//                //recyclerView.layoutManager = LinearLayoutManager(this)
-//               // recyclerView.adapter = CardAdaptater(cards)
-//                Log.d("API_SUCCESS", "Appel boutton list: ${cardList}")
-//                Log.d("API_SUCCESS", "Appel boutton : ${cards}")
-//
-//            }
-//        })
     }
 }

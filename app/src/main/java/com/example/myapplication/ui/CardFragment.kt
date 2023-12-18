@@ -1,24 +1,27 @@
 package com.example.myapplication.ui
 
+
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.CardAdaptater
 import com.example.myapplication.R
 import com.example.myapplication.model.Card
-import dataBase.AppDatabase
-import kotlinx.coroutines.Dispatchers
+import com.example.myapplication.model.ViewModel.CardViewModel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import androidx.activity.viewModels
+import androidx.fragment.app.viewModels
+
 class CardFragment : Fragment() {
 
-    private lateinit var recyclerView: RecyclerView
-    private var cardDao = AppDatabase.getDatabase().cardDao()
     private lateinit var cardAdapter: CardAdaptater
+    private val cardViewModel: CardViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,32 +44,26 @@ class CardFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_card, container, false)
-        recyclerView = view.findViewById(R.id.cardRecyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(context)
-      //  throw RuntimeException("Test Crash")
+
+        val rootView = inflater.inflate(R.layout.fragment_card, container, false)
+        val recyclerView = rootView.findViewById<RecyclerView>(R.id.cardRecyclerView)
+
+        cardAdapter = CardAdaptater()
+        recyclerView.adapter = cardAdapter
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        cardViewModel.cardsList.observe(viewLifecycleOwner, Observer { cards ->
+            cardAdapter.submitList(cards)
+        })
 
         lifecycleScope.launch {
-            try {
-                val cards = withContext(Dispatchers.IO) {
-                    cardDao.getCardsData2()
-                }
-                cardAdapter = CardAdaptater(cards)
-
-                Log.d("API_SUCCESS", "taille : ${cardAdapter.itemCount}")
-                Log.d("API_SUCCESS", "Appel boutton : ${cards}")
-                lifecycleScope.launch(Dispatchers.Main) {
-                    recyclerView.adapter = cardAdapter
-                    cardAdapter.notifyDataSetChanged()
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+            cardViewModel.fetchCards2()
         }
 
-        return view;
-    }
+        return rootView
 
+
+    }
 
     companion object {
         /**
@@ -79,13 +76,6 @@ class CardFragment : Fragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-//        fun newInstance(param1: String, param2: String) =
-//            CardFragment().apply {
-//                arguments = Bundle().apply {
-//                    putString(ARG_PARAM1, param1)
-//                    putString(ARG_PARAM2, param2)
-//                }
-//            }
         fun newInstance(card: Card?): CardFragment {
             val fragment = CardFragment()
             val args = Bundle()

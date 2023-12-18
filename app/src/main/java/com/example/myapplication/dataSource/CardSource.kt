@@ -15,9 +15,9 @@ object CardSource {
         }
         val client = OkHttpClient.Builder().apply {
             this.addInterceptor(intercepter)
-            this.connectTimeout(3, TimeUnit.MINUTES)
-            this.readTimeout(3, TimeUnit.MINUTES)
-            this.writeTimeout(3, TimeUnit.MINUTES)
+            this.connectTimeout(2, TimeUnit.MINUTES)
+            this.readTimeout(2, TimeUnit.MINUTES)
+            this.writeTimeout(2, TimeUnit.MINUTES)
         }.build()
 
         val gson = GsonBuilder().setLenient().create()

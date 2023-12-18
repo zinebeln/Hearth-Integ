@@ -22,7 +22,7 @@
         android:layout_height="458dp"
         app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
         app:layout_constraintTop_toBottomOf="@id/buttonOpenFragment"
-        tools:ignore="UnknownId"
+        tools:ignore="MissingConstraints,UnknownId"
         tools:layout_editor_absoluteX="-5dp" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

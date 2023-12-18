@@ -17,6 +17,4 @@ class AllCardViewModel(private val repository: CardsRepository) : ViewModelProvi
             throw IllegalArgumentException("Unknown ViewModel class")
         }
 
-
-
 }
