@@ -12,6 +12,9 @@ import android.widget.FrameLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.myapplication.dataSource.APIDataSource
 import com.example.myapplication.domain.CardDataService
 import com.example.myapplication.model.ViewModel.CardViewModel
@@ -19,6 +22,7 @@ import com.example.myapplication.model.ViewModel.InfoViewModel
 import com.example.myapplication.domain.repository.CardsRepository
 import com.example.myapplication.factory.AllCardViewModel
 import com.example.myapplication.ui.CardFragment
+import com.example.myapplication.ui.UserFragment
 import dataBase.AppDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -33,9 +37,21 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+//        // Configure le composant de navigation
+        val navController = findNavController(R.id.nav_host_fragment)
+        val appBarConfiguration = AppBarConfiguration(navController.graph)
+
         val fragmentContainer = findViewById<FrameLayout>(R.id.fragmentContainer)
         val buttonOpenFragment = findViewById<Button>(R.id.buttonOpenFragment)
 
+        // Configure la barre d'action avec le composant de navigation
+        setupActionBarWithNavController(navController, appBarConfiguration)
+
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.container, UserFragment())
+                .commit()
+        }
         buttonOpenFragment.setOnClickListener {
             // Remplacez le contenu du conteneur par votre fragment
             supportFragmentManager.beginTransaction()
@@ -43,40 +59,11 @@ class MainActivity : AppCompatActivity() {
                 .addToBackStack(null)
                 .commit()
         }
+    }
 
-
-
-//            val car = APIDataSource.retrofit.create(CardDataService::class.java)
-//            val repository = CardsRepository(car)
-//            val viewModelFactory = AllCardViewModel(repository)
-//            infoViewModelCard = ViewModelProvider(this, viewModelFactory).get(CardViewModel::class.java)
-//            infoViewModelCard.fetchCards2()
-
-//        infoViewModelCard.cardsList.observe(this, Observer { cards ->
-//            if (cards != null) {
-//                buttonOpenFragment.setOnClickListener {
-//                    val fragmentManager = supportFragmentManager
-//                    val fragmentTransaction = fragmentManager.beginTransaction()
-//
-//                    lifecycleScope.launch(Dispatchers.IO) {
-//                        val data = AppDatabase.getDatabase().cardDao().getCardsData2()
-//                        if (data.isEmpty()) {
-//                            Log.d("api main", "test: ${cards}")
-//                            AppDatabase.getDatabase().cardDao().insertCards(cards)
-//                        }
-//                        lifecycleScope.launch(Dispatchers.Main) {
-//                            val fragment = CardFragment.newInstance(data.firstOrNull())
-//                            fragmentTransaction.replace(R.id.fragmentContainer, fragment)
-//                            fragmentTransaction.addToBackStack(null)
-//                            fragmentTransaction.commit()
-//                        }
-//
-//                    }
-//                }
-//            }
-//        })
-
-
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment)
+        return navController.navigateUp() || super.onSupportNavigateUp()
     }
 }
 

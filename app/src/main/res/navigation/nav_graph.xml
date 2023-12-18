@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--<navigation xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    android:id="@+id/nav_graph.xml">-->
+
+
+
+
+<!--</navigation>-->
+
+
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/userFragment">
+
+    <fragment
+        android:id="@+id/userFragment"
+        android:name="com.example.myapplication.ui.UserFragment"
+        android:label="Authentification"
+        tools:layout="@layout/fragment_user" />
+
+    <fragment
+        android:id="@+id/cardFragment"
+        android:name="com.example.myapplication.ui.CardFragment"
+        android:label="Accueil"
+        tools:layout="@layout/fragment_card" />
+
+    <action
+        android:id="@+id/action_userFragment_to_cardFragment"
+        app:destination="@id/cardFragment" />
+
+    <!-- Ajoutez d'autres destinations de navigation si nécessaire -->
+
+</navigation>
