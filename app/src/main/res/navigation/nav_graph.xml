@@ -3,11 +3,7 @@
 <!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
 <!--    android:id="@+id/nav_graph.xml">-->
 
-
-
-
 <!--</navigation>-->
-
 
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -29,7 +25,9 @@
 
     <action
         android:id="@+id/action_userFragment_to_cardFragment"
-        app:destination="@id/cardFragment" />
+        app:destination="@id/cardFragment"
+        app:popUpTo="@id/userFragment"
+        app:popUpToInclusive="true" />
 
     <!-- Ajoutez d'autres destinations de navigation si nécessaire -->
 

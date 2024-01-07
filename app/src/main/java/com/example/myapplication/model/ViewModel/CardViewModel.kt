@@ -1,5 +1,6 @@
 package com.example.myapplication.model.ViewModel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -30,21 +31,16 @@ class CardViewModel(private val repository: CardsRepository) : ViewModel()  {
     private var cardDao = AppDatabase.getDatabase().cardDao()
 
     suspend fun fetchCards2() {
-
-//        try {
-//            val cardsResponse: Cards = repository.getCards().single()
-//            val cardsList: List<Card> = cardsResponse.Basic.filter { it.img != null }
-//            _cardsList.postValue(cardsList)
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//        }
-
         viewModelScope.launch {
             try {
                 repository.getCards().collect { cards ->
+                    Log.d("CardViewModel", "Received cards from repository: $cards")
                     val cardsWithImages = withContext(Dispatchers.IO) {
                         // Utiliser la fonction du DAO ici
-                        cardDao.getCardsData2()
+//                        cardDao.getCardsData2()
+                        val localData = cardDao.getCardsData2()
+                        Log.d("CardViewModel", "Local data from database: $localData")
+                        localData
                     }
                     _cardsList.postValue(cardsWithImages.filter { it.img != null })
                 }

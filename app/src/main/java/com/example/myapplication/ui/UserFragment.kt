@@ -1,6 +1,7 @@
 package com.example.myapplication.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,6 +38,7 @@ class UserFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         authViewModel.userLoggedIn.observe(viewLifecycleOwner, Observer { userLoggedIn ->
+            Log.d("UserFragment", "User logged in: $userLoggedIn")
             if (userLoggedIn) {
                 Toast.makeText(requireContext(), "Utilisateur connecté avec succès", Toast.LENGTH_SHORT).show()
             } else {
@@ -45,7 +47,7 @@ class UserFragment : Fragment() {
         })
 
         // Appeler la fonction pour créer et vérifier la connexion de l'utilisateur "tutu"
-        authViewModel.registerAndLoginUser()
+       // authViewModel.registerAndLoginUser()
     }
 
     override fun onCreateView(
@@ -58,8 +60,6 @@ class UserFragment : Fragment() {
         etPassword = view.findViewById(R.id.etPassword)
         btnLogin = view.findViewById(R.id.btnLogin)
         btnCreateAccount = view.findViewById(R.id.btnCreateAccount)
-        // Supprimez la ligne suivante, car vous avez déjà déclaré authViewModel avec "by viewModels()"
-        // authViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
 
         btnLogin.setOnClickListener {
             val username = etUsername.text.toString()
@@ -67,12 +67,12 @@ class UserFragment : Fragment() {
 
             authViewModel.login(username, password) { isSuccessful ->
                 if (isSuccessful) {
-                    // La connexion a réussi, vous pouvez naviguer vers la prochaine activité ou effectuer d'autres actions
                     Toast.makeText(requireContext(), "Connexion réussie", Toast.LENGTH_SHORT).show()
-                    // Déclenche la navigation vers une autre destination après la connexion réussie
+                    Log.d("UserFragment", "Avant la navigation vers CardFragment")
                     findNavController().navigate(R.id.action_userFragment_to_cardFragment)
+                    Log.d("UserFragment", "Après la navigation vers CardFragment")
+
                 } else {
-                    // La connexion a échoué, afficher un message d'erreur
                     Toast.makeText(requireContext(), "Échec de la connexion", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -80,10 +80,8 @@ class UserFragment : Fragment() {
         btnCreateAccount.setOnClickListener {
             val username = etUsername.text.toString()
             val password = etPassword.text.toString()
-
             authViewModel.register(username, password)
         }
-
         return view
     }
 

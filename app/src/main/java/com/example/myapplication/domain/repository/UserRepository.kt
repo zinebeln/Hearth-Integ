@@ -6,12 +6,6 @@ import com.example.myapplication.model.User
 //import kotlin.coroutines.jvm.internal.CompletedContinuation.context
 
 import android.content.Context
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-
 
 class UserRepository(private val userDao: DaoUser) {
     suspend fun registerUser2(user: User) {
