@@ -18,6 +18,9 @@ import com.example.myapplication.model.ViewModel.CardViewModel
 import kotlinx.coroutines.launch
 import androidx.activity.viewModels
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class CardFragment : Fragment() {
 
@@ -54,6 +57,7 @@ class CardFragment : Fragment() {
         recyclerView.adapter = cardAdapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
+        // Supprimez cet observer
         cardViewModel.cardsList.observe(viewLifecycleOwner, Observer { cards ->
             cardAdapter.submitList(cards)
         })
@@ -61,6 +65,38 @@ class CardFragment : Fragment() {
         lifecycleScope.launch {
             cardViewModel.fetchCards2()
         }
+
+//        val bottomNavigationView = rootView.findViewById<BottomNavigationView>(R.id.bottomNavigation)
+//        val navController = findNavController()
+//        // Attachez le NavController au BottomNavigationView
+//        bottomNavigationView.setupWithNavController(navController)
+
+        // Initialisation de la navigation avec la BottomNavigationView
+        val bottomNavigationView = rootView.findViewById<BottomNavigationView>(R.id.bottomNavigation)
+        val navController = findNavController()
+        bottomNavigationView.setupWithNavController(navController)
+
+
+//        bottomNavigationView.setOnNavigationItemSelectedListener { item ->
+//            when (item.itemId) {
+//
+//                R.id.action_cards -> {
+////                    navController.navigate(R.id.action_cardFragment_to_cardFragment)
+//                    true
+//                }
+//                R.id.action_decks -> {
+//                    navController.navigate(R.id.action_cardFragment_to_deckFragment)
+//                    true
+//                }
+//
+//                R.id.action_profil -> {
+//                    navController.navigate(R.id.action_cardFragment_to_profilFragment)
+//                    true
+//                }
+//
+//                else -> false
+//            }
+//        }
 
         return rootView
 

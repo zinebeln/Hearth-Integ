@@ -68,6 +68,8 @@ class UserFragment : Fragment() {
             authViewModel.login(username, password) { isSuccessful ->
                 if (isSuccessful) {
                     Toast.makeText(requireContext(), "Connexion réussie", Toast.LENGTH_SHORT).show()
+                    val authManager = AuthManager(requireContext())
+                    authManager.setLoggedIn(true)
                     Log.d("UserFragment", "Avant la navigation vers CardFragment")
                     findNavController().navigate(R.id.action_userFragment_to_cardFragment)
                     Log.d("UserFragment", "Après la navigation vers CardFragment")

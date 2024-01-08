@@ -20,14 +20,77 @@
     <fragment
         android:id="@+id/cardFragment"
         android:name="com.example.myapplication.ui.CardFragment"
-        android:label="Accueil"
-        tools:layout="@layout/fragment_card" />
+        android:label="Cards"
+        tools:layout="@layout/fragment_card" >
+        <action
+            android:id="@+id/action_cardFragment_self"
+            app:destination="@id/cardFragment" />
+        <action
+            android:id="@+id/action_cardFragment_to_deckFragment"
+            app:destination="@id/section2Fragment" />
+        <action
+            android:id="@+id/action_cardFragment_to_profilFragment"
+            app:destination="@id/section3Fragment" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/section2Fragment"
+        android:name="com.example.myapplication.ui.DecksFragment"
+        android:label="Decks"
+        tools:layout="@layout/fragment_decks">
+        <action
+            android:id="@+id/action_decksFragment_self"
+            app:destination="@id/section2Fragment" />
+    <action
+        android:id="@+id/action_deckFragment_to_cardFragment"
+        app:destination="@id/cardFragment" />
+    <action
+        android:id="@+id/action_deckFragment_to_profilFragment"
+        app:destination="@id/section3Fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/section3Fragment"
+        android:name="com.example.myapplication.ui.ProfilFragment"
+        android:label="Profil"
+        tools:layout="@layout/fragment_profil" >
+        <action
+            android:id="@+id/action_profilFragment_self"
+            app:destination="@id/section3Fragment" />
+    <action
+        android:id="@+id/action_profilFragment_to_cardFragment"
+        app:destination="@id/cardFragment" />
+    <action
+        android:id="@+id/action_profilFragment_to_deckFragment"
+        app:destination="@id/section2Fragment" />
+    </fragment>
+
+
+
 
     <action
         android:id="@+id/action_userFragment_to_cardFragment"
         app:destination="@id/cardFragment"
         app:popUpTo="@id/userFragment"
         app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_cardFragment_to_cardFragment"
+        app:destination="@id/cardFragment" />
+
+    <action
+        android:id="@+id/action_cardFragment_to_section2Fragment"
+        app:destination="@id/section2Fragment" />
+
+    <action
+        android:id="@+id/action_cardFragment_to_section3Fragment"
+        app:destination="@id/section3Fragment" />
+
+    <action
+        android:id="@+id/action_open_decks_fragment"
+        app:destination="@id/section2Fragment" />
+
 
     <!-- Ajoutez d'autres destinations de navigation si nécessaire -->
 
