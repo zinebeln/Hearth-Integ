@@ -4,15 +4,18 @@
     <item
         android:id="@id/cardFragment"
         android:title="Cards"
+        android:icon="@drawable/ic_card"
         android:checked="true"
        />
     <item
         android:id="@id/section2Fragment"
         android:title="Decks"
+        android:icon="@drawable/ic_decks"
        />
     <item
         android:id="@id/section3Fragment"
         android:title="Profil"
+        android:icon="@drawable/ic_profil"
         />
 
 </menu>
