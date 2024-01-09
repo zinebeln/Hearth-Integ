@@ -26,5 +26,7 @@ class AdapterCards (private val cards: CardsList) : RecyclerView.Adapter<Adapter
         TODO("Not yet implemented")
         val c = cards[position]
         holder.textViewName.text = cards.get(position)?.cardId;
+        // Vérifiez si la propriété img est null
+
     }
 }

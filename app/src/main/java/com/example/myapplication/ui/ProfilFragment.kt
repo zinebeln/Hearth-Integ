@@ -28,11 +28,11 @@ class ProfilFragment : Fragment()  {
     private lateinit var authViewModel: AuthManager
     private lateinit var userObserver: Observer<User>
 
-    override fun onDestroyView() {
-        // Retirez l'observation lors de la destruction de la vue
-        authViewModel.user.removeObserver(userObserver)
-        super.onDestroyView()
-    }
+//    override fun onDestroyView() {
+//        // Retirez l'observation lors de la destruction de la vue
+//        authViewModel.user.removeObserver(userObserver)
+//        super.onDestroyView()
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

@@ -4,6 +4,7 @@ package com.example.myapplication.ui
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
@@ -20,6 +21,7 @@ import androidx.activity.viewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class CardFragment : Fragment() {
@@ -29,21 +31,22 @@ class CardFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
+//        setHasOptionsMenu(true)
     }
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.fragment_menu, menu)
-    }
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_back -> {
-                parentFragmentManager.popBackStack()
-                return true
-            }
-            else -> return super.onOptionsItemSelected(item)
-        }
-    }
+//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+//        super.onCreateOptionsMenu(menu, inflater)
+//        inflater.inflate(R.menu.fragment_menu, menu)
+//    }
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        when (item.itemId) {
+//            R.id.action_back -> {
+//                parentFragmentManager.popBackStack()
+//                return true
+//            }
+//           // else -> return super.onOptionsItemSelected(item)
+//        }
+//
+//    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -52,51 +55,41 @@ class CardFragment : Fragment() {
         Log.d("CardFragment", "onCreateView called")
         val rootView = inflater.inflate(R.layout.fragment_card, container, false)
         val recyclerView = rootView.findViewById<RecyclerView>(R.id.cardRecyclerView)
+        val prog = rootView.findViewById<ProgressBar>(R.id.progressBar)
 
         cardAdapter = CardAdaptater()
         recyclerView.adapter = cardAdapter
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+       // recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        recyclerView.apply {
+            layoutManager = GridLayoutManager(requireContext(), 2) // 2 colonnes, ajustez selon vos besoins
+           // adapter = cardAdapter
+        }
+
+
+        cardViewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
+            if (isLoading) {
+                prog.visibility = View.VISIBLE
+            } else {
+                prog.visibility = View.GONE
+            }
+        })
+
 
         // Supprimez cet observer
         cardViewModel.cardsList.observe(viewLifecycleOwner, Observer { cards ->
             cardAdapter.submitList(cards)
         })
 
+
         lifecycleScope.launch {
             cardViewModel.fetchCards2()
         }
-
-//        val bottomNavigationView = rootView.findViewById<BottomNavigationView>(R.id.bottomNavigation)
-//        val navController = findNavController()
-//        // Attachez le NavController au BottomNavigationView
-//        bottomNavigationView.setupWithNavController(navController)
-
         // Initialisation de la navigation avec la BottomNavigationView
         val bottomNavigationView = rootView.findViewById<BottomNavigationView>(R.id.bottomNavigation)
         val navController = findNavController()
         bottomNavigationView.setupWithNavController(navController)
 
-
-//        bottomNavigationView.setOnNavigationItemSelectedListener { item ->
-//            when (item.itemId) {
-//
-//                R.id.action_cards -> {
-////                    navController.navigate(R.id.action_cardFragment_to_cardFragment)
-//                    true
-//                }
-//                R.id.action_decks -> {
-//                    navController.navigate(R.id.action_cardFragment_to_deckFragment)
-//                    true
-//                }
-//
-//                R.id.action_profil -> {
-//                    navController.navigate(R.id.action_cardFragment_to_profilFragment)
-//                    true
-//                }
-//
-//                else -> false
-//            }
-//        }
 
         return rootView
 

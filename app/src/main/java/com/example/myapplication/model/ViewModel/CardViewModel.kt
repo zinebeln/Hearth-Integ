@@ -1,5 +1,6 @@
 package com.example.myapplication.model.ViewModel
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -26,30 +27,37 @@ class CardViewModel(private val repository: CardsRepository) : ViewModel()  {
     constructor() : this(CardsRepository()) {
     }
 
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> get() = _isLoading
+
     private val _cardsList = MutableLiveData<List<Card>>()
     val cardsList: LiveData<List<Card>> = _cardsList
     private var cardDao = AppDatabase.getDatabase().cardDao()
-
+    init {
+        _isLoading.value = false
+    }
+    @SuppressLint("SuspiciousIndentation")
     suspend fun fetchCards2() {
-        viewModelScope.launch {
-            try {
-                repository.getCards().collect { cards ->
-                    Log.d("CardViewModel", "Received cards from repository: $cards")
-                    val cardsWithImages = withContext(Dispatchers.IO) {
-                        // Utiliser la fonction du DAO ici
-//                        cardDao.getCardsData2()
-                        val localData = cardDao.getCardsData2()
-                        Log.d("CardViewModel", "Local data from database: $localData")
-                        localData
+        if (_cardsList.value.isNullOrEmpty() && _isLoading.value == false)  {
+            _isLoading.value = true
+                try {
+                    repository.getCards().collect { cards ->
+                        Log.d("CardViewModel", "Received cards from repository: $cards")
+                        val cardsWithImages = withContext(Dispatchers.IO) {
+                           cardDao.getCardsData2()
+                        }
+//                    _cardsList.postValue(cardsWithImages.filter { it.img != null })
+                        _cardsList.postValue(cardsWithImages)
                     }
-                    _cardsList.postValue(cardsWithImages.filter { it.img != null })
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                } finally {
+                    _isLoading.value = false
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
         }
 
-    }
+  // }
 
 
 }

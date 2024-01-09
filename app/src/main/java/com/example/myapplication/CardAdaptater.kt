@@ -33,11 +33,30 @@ class CardAdaptater : ListAdapter<Card, CardAdaptater.ViewHolder>(CardDiffCallba
         holder.cardName.text = card.name
         holder.cardType.text = card.type
 
-        Glide.with(holder.itemView)
-            .load(card.img)
-            .apply(RequestOptions().centerCrop())
-            .transition(DrawableTransitionOptions.withCrossFade())
-            .into(holder.imageCard)
+//        Glide.with(holder.itemView)
+//            .load(card.img)
+//            .apply(RequestOptions().centerCrop())
+//            .transition(DrawableTransitionOptions.withCrossFade())
+//            .into(holder.imageCard)
+
+        if (card.img != null) {
+            Glide.with(holder.itemView)
+                .load(card.img)
+                .apply(RequestOptions().centerCrop())
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(holder.imageCard)
+        } else {
+            // Utilisez une image par défaut si la propriété img est null
+            Glide.with(holder.itemView)
+                .load(R.drawable.cardv_background)
+                .apply(RequestOptions().centerCrop())
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(holder.imageCard)
+        }
+
+        holder.itemView.setOnClickListener {
+            // Action à effectuer lorsqu'une carte est cliquée (à définir)
+        }
     }
 }
 
