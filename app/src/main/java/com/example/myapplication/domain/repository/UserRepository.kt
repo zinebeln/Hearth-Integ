@@ -6,8 +6,13 @@ import com.example.myapplication.model.User
 //import kotlin.coroutines.jvm.internal.CompletedContinuation.context
 
 import android.content.Context
+import dataBase.AppDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class UserRepository(private val userDao: DaoUser) {
+
+   // val userDao = AppDatabase.getDatabase().userDao()
     suspend fun registerUser2(user: User) {
         userDao.insert(user)
     }
@@ -33,5 +38,13 @@ class UserRepository(private val userDao: DaoUser) {
 
     suspend fun getUserByUsername(username: String): User? {
         return userDao.getUserByUsernameT(username)
+    }
+
+    suspend fun deleteUser(user: User) {
+        // Utilisez un contexte approprié (par exemple, avec viewModelScope pour un ViewModel)
+        withContext(Dispatchers.IO) {
+            userDao.delete(user)
+        }
+
     }
 }

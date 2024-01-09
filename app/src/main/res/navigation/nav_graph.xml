@@ -18,6 +18,16 @@
         tools:layout="@layout/fragment_user" />
 
     <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.example.myapplication.ui.SignUpFragment"
+        android:label="Sign Up"
+        tools:layout="@layout/fragment_sign_up" />
+
+    <action
+        android:id="@+id/action_userFragment_to_signUpFragment"
+        app:destination="@id/signUpFragment" />
+
+    <fragment
         android:id="@+id/cardFragment"
         android:name="com.example.myapplication.ui.CardFragment"
         android:label="Cards"
@@ -64,6 +74,10 @@
     <action
         android:id="@+id/action_profilFragment_to_deckFragment"
         app:destination="@id/section2Fragment" />
+        <action
+            android:id="@+id/action_profilFragment_to_userFragment"
+            app:destination="@id/userFragment" />
+
     </fragment>
 
 
