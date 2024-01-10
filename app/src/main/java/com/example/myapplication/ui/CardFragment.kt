@@ -6,47 +6,29 @@ import android.util.Log
 import android.view.*
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.CardAdaptater
 import com.example.myapplication.R
 import com.example.myapplication.model.Card
 import com.example.myapplication.model.ViewModel.CardViewModel
 import kotlinx.coroutines.launch
-import androidx.activity.viewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.myapplication.model.ViewModel.SharedViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class CardFragment : Fragment() {
 
-    private lateinit var cardAdapter: CardAdaptater
     private val cardViewModel: CardViewModel by viewModels()
+    private val sharedViewModel: SharedViewModel by activityViewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-//        setHasOptionsMenu(true)
-    }
-//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-//        super.onCreateOptionsMenu(menu, inflater)
-//        inflater.inflate(R.menu.fragment_menu, menu)
-//    }
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        when (item.itemId) {
-//            R.id.action_back -> {
-//                parentFragmentManager.popBackStack()
-//                return true
-//            }
-//           // else -> return super.onOptionsItemSelected(item)
-//        }
-//
-//    }
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -55,45 +37,52 @@ class CardFragment : Fragment() {
         Log.d("CardFragment", "onCreateView called")
         val rootView = inflater.inflate(R.layout.fragment_card, container, false)
         val recyclerView = rootView.findViewById<RecyclerView>(R.id.cardRecyclerView)
-        val prog = rootView.findViewById<ProgressBar>(R.id.progressBar)
+        //val prog = rootView.findViewById<ProgressBar>(R.id.progressBar)
 
-        cardAdapter = CardAdaptater()
-        recyclerView.adapter = cardAdapter
-       // recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
+//        val adapter = CardAdaptater(object : CardAdaptater.OnItemClickListener {
+//            override fun onItemClick(card: Card) {
+//                sharedViewModel.selectCard(card)
+//                findNavController().navigate(R.id.action_cardFragment_to_cardDetailsFragment)
+//            }
+//        })
+
+        val adapter = CardAdaptater()
+        recyclerView.adapter = adapter
         recyclerView.apply {
             layoutManager = GridLayoutManager(requireContext(), 2) // 2 colonnes, ajustez selon vos besoins
-           // adapter = cardAdapter
         }
 
-
-        cardViewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
-            if (isLoading) {
-                prog.visibility = View.VISIBLE
-            } else {
-                prog.visibility = View.GONE
-            }
-        })
-
-
-        // Supprimez cet observer
         cardViewModel.cardsList.observe(viewLifecycleOwner, Observer { cards ->
-            cardAdapter.submitList(cards)
+            Log.d("CardFragment", "observer $cards")
+            adapter.submitList(cards)
         })
-
 
         lifecycleScope.launch {
             cardViewModel.fetchCards2()
         }
-        // Initialisation de la navigation avec la BottomNavigationView
+
+        adapter.setOnItemClickListener(object : CardAdaptater.OnItemClickListener {
+            override fun onItemClick(card: Card) {
+                sharedViewModel.selectCard(card)
+               // val action = CardFragmentDirections.actionCardFragmentToCardDetailsFragment(cardid = card.cardId)
+                findNavController().navigate(R.id.action_cardFragment_to_cardDetailsFragment)
+            }
+        })
+
+//    adapter.setOnItemClickListener(object : CardAdaptater.OnItemClickListener {
+//        override fun onItemClick(card: Card) {
+//            Log.d("CardFragment", "onClick card : $card")
+//            sharedViewModel?.selectCard(card)
+//            findNavController().navigate(R.id.action_cardFragment_to_cardDetailsFragment)
+//        }
+//    })
+
         val bottomNavigationView = rootView.findViewById<BottomNavigationView>(R.id.bottomNavigation)
         val navController = findNavController()
         bottomNavigationView.setupWithNavController(navController)
 
-
         return rootView
-
-
     }
 
     companion object {

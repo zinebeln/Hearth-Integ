@@ -1,11 +1,15 @@
 package com.example.myapplication
 
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -14,15 +18,39 @@ import com.example.myapplication.model.Card
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
+import com.example.myapplication.model.ViewModel.SharedViewModel
+
 
 class CardAdaptater : ListAdapter<Card, CardAdaptater.ViewHolder>(CardDiffCallback()) {
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+     private var onItem: OnItemClickListener? = null
+     private lateinit var sharedViewModel: SharedViewModel
+//    private lateinit var onI: SharedViewModel
+
+    interface OnItemClickListener {
+        fun onItemClick(card: Card)
+    }
+    fun setOnItemClickListener(listener: OnItemClickListener) {
+        this.onItem = listener
+    }
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val cardName: TextView = itemView.findViewById(R.id.textViewName)
         val cardType: TextView = itemView.findViewById(R.id.textViewType)
         val imageCard: ImageView = itemView.findViewById(R.id.imageViewCard)
-    }
 
+        init {
+            itemView.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val card = getItem(position)
+                    onItem?.onItemClick(card)
+                    //listener?.onItemClick(card)
+                }
+
+            }
+        }
+
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_card, parent, false)
         return ViewHolder(itemView)
@@ -33,11 +61,6 @@ class CardAdaptater : ListAdapter<Card, CardAdaptater.ViewHolder>(CardDiffCallba
         holder.cardName.text = card.name
         holder.cardType.text = card.type
 
-//        Glide.with(holder.itemView)
-//            .load(card.img)
-//            .apply(RequestOptions().centerCrop())
-//            .transition(DrawableTransitionOptions.withCrossFade())
-//            .into(holder.imageCard)
 
         if (card.img != null) {
             Glide.with(holder.itemView)
@@ -54,11 +77,21 @@ class CardAdaptater : ListAdapter<Card, CardAdaptater.ViewHolder>(CardDiffCallba
                 .into(holder.imageCard)
         }
 
-        holder.itemView.setOnClickListener {
-            // Action à effectuer lorsqu'une carte est cliquée (à définir)
-        }
+
     }
+
+
+
+
+
+
+
+
+
+
 }
+
+
 
 class CardDiffCallback : DiffUtil.ItemCallback<Card>() {
     override fun areItemsTheSame(oldItem: Card, newItem: Card): Boolean {
@@ -69,4 +102,6 @@ class CardDiffCallback : DiffUtil.ItemCallback<Card>() {
         return oldItem == newItem
     }
 }
+
+
 

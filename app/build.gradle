@@ -6,6 +6,8 @@ plugins {
     id 'com.google.gms.google-services'
     // Add the Crashlytics Gradle plugin
     id 'com.google.firebase.crashlytics'
+    id 'androidx.navigation.safeargs'
+
 
 }
 
@@ -26,6 +28,7 @@ android {
 
     buildFeatures {
         dataBinding true
+        viewBinding true
     }
 
     buildTypes {
@@ -109,6 +112,8 @@ dependencies {
     // Add the dependency for the Firebase SDK for Google Analytics
     implementation("com.google.firebase:firebase-analytics")
     implementation ("com.google.firebase:firebase-crashlytics")
+
+
 
 
 
