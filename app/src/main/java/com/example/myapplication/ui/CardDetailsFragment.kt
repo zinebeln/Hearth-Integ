@@ -12,17 +12,22 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.myapplication.R
+import com.example.myapplication.model.ViewModel.DecksViewModel
 import com.example.myapplication.model.ViewModel.SharedViewModel
+import kotlinx.coroutines.launch
 
 class CardDetailsFragment : Fragment()  {
 
     private val sharedViewModel: SharedViewModel by activityViewModels()
+    private val decksViewModel: DecksViewModel by activityViewModels()
 
     private lateinit var textViewCardName: TextView
     private lateinit var textViewCardType: TextView
     private lateinit var imageViewCard: ImageView
+    private lateinit var btn : ImageButton
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,6 +39,7 @@ class CardDetailsFragment : Fragment()  {
         textViewCardName = view.findViewById(R.id.textViewCardNameDetails)
         textViewCardType = view.findViewById(R.id.textViewCardTypeDetails)
         imageViewCard = view.findViewById(R.id.imageViewCardDetails)
+        btn = view.findViewById(R.id.imageButtonStar)
 
 
         return view
@@ -55,6 +61,15 @@ class CardDetailsFragment : Fragment()  {
                     } else {
                         imageViewCard.setImageResource(R.drawable.cardv_background)
                     }
+
+                    btn.setOnClickListener {
+                        lifecycleScope.launch {
+                            Log.d("on click favorite", "click $selectedCard")
+                            decksViewModel.toggleFavoriteStatus(selectedCard)
+                        }
+                    }
+
+
                 }
 
         })

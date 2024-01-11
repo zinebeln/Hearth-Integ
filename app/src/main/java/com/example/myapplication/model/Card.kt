@@ -26,7 +26,8 @@ data class Card(
 //    val mechanics: List<Mechanic>?,
     val spellSchool: String?,
     val race: String?,
-    val elite: Boolean?
+    val elite: Boolean?,
+    var isFavorite: Boolean = false
 ) : Serializable
 @Entity
 data class Mechanic(

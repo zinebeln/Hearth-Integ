@@ -5,19 +5,25 @@ import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.myapplication.domain.repository.DaoCards
 import com.example.myapplication.domain.repository.DaoUser
+import com.example.myapplication.domain.repository.DecksDao
 import com.example.myapplication.model.Card
+import com.example.myapplication.model.DecksCard
 import com.example.myapplication.model.User
 
 
-@Database(entities = [Card::class, User::class],  version = 3)
+@Database(entities = [Card::class, User::class, DecksCard::class],  version = 4, exportSchema = false)
+@TypeConverters(CardTypeConverter::class)
 //@Database(entities = [User::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun cardDao(): DaoCards
     abstract fun userDao(): DaoUser
+
+    abstract fun decksDao(): DecksDao
 
     companion object {
 
@@ -29,7 +35,8 @@ abstract class AppDatabase : RoomDatabase() {
                 AppDatabase::class.java,
                 "hearth-stone"
 
-       ).addMigrations(migration1to2, migration2to3)
+       ).fallbackToDestructiveMigration()
+//            .addMigrations(migration1to2, migration2to3, migration3to4)
                 .build()
         }
 
@@ -55,6 +62,15 @@ abstract class AppDatabase : RoomDatabase() {
 
         }
         }
+
+        val migration3to4 = object : Migration(3, 4) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                Log.d("Migration", "Running migration from version 3 to 4")
+                // Ajouter la nouvelle colonne
+                database.execSQL("ALTER TABLE Card ADD COLUMN isFavorite INTEGER DEFAULT 0")
+            }
+        }
+
     }
 
 
