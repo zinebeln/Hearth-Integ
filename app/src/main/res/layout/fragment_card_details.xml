@@ -34,12 +34,23 @@
 
     <!-- Ajoutez d'autres vues pour afficher d'autres détails de la carte si nécessaire -->
 
-    <ImageButton
-        android:id="@+id/imageButtonStar"
-        android:layout_width="94dp"
-        android:layout_height="68dp"
-        android:layout_marginTop="16dp"
-        android:background="?android:attr/selectableItemBackground"
-        app:srcCompat="@drawable/ic_decks" />
+<!--    <ImageButton-->
+<!--        android:id="@+id/imageButtonStar"-->
+<!--        android:layout_width="94dp"-->
+<!--        android:layout_height="68dp"-->
+<!--        android:layout_marginTop="16dp"-->
+<!--        android:background="?android:attr/selectableItemBackground"-->
+<!--        app:srcCompat="@drawable/ic_decks" />-->
+
+    <Button
+        android:id="@+id/btnAddToFavorites"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_background"
+        android:backgroundTint="@color/button_selector"
+        android:onClick="@{() -> viewModel.toggleFavoriteStatus(card)}"
+        android:text="Ajouter aux favoris"
+        android:textColor="@drawable/button_text_color" />
+
 
 </LinearLayout>

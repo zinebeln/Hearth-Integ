@@ -15,8 +15,11 @@ interface DecksDao {
     suspend fun insertDeckCard(decksCard: DecksCard)
 
     @Delete
-    suspend fun deleteDeckCard(decksCard: DecksCard)
+    suspend fun deleteDecksCard(decksCard: DecksCard)
 
     @Query("SELECT * FROM decks_cards")
     fun getAllDeckCards(): LiveData<List<DecksCard>>
+
+    @Query("SELECT * FROM decks_cards WHERE cardId = :cardId")
+    suspend fun getDecksCardById(cardId: String): DecksCard?
 }

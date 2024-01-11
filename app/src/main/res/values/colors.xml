@@ -9,5 +9,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="colorSelected">#FF4081</color>
     <color name="colorUnselected">#757575</color>
+    <color name="colorFavorite">#FF4081</color>
+    <color name="colorNotFavorite">#2196F3</color>
 
 </resources>

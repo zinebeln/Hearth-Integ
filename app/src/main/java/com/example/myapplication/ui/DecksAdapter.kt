@@ -18,8 +18,12 @@ import com.example.myapplication.model.DecksCard
 //class DecksAdapter(private val decksCards: List<DecksCard>) : RecyclerView.Adapter<DecksAdapter.ViewHolder>() {
 //
 
-class DecksAdapter : ListAdapter<DecksCard, DecksAdapter.ViewHolder>(DecksCardDiffCallback()) {
+//class DecksAdapter : ListAdapter<DecksCard, DecksAdapter.ViewHolder>(DecksCardDiffCallback()) {
+class DecksAdapter(private val listener: OnItemClickListener) : ListAdapter<DecksCard, DecksAdapter.ViewHolder>(DecksCardDiffCallback()) {
 
+    interface OnItemClickListener {
+        fun onItemClicked(decksCard: DecksCard)
+    }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -51,6 +55,18 @@ class DecksAdapter : ListAdapter<DecksCard, DecksAdapter.ViewHolder>(DecksCardDi
 
             Glide.with(itemView).load(decksCard.card?.img).into(imageViewCard)
         }
+
+        init {
+            itemView.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val decksCard = getItem(position)
+                    listener.onItemClicked(decksCard)
+                }
+            }
+        }
+
+
     }
 }
 class DecksCardDiffCallback : DiffUtil.ItemCallback<DecksCard>() {

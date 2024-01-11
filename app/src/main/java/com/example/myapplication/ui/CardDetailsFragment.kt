@@ -5,9 +5,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -27,7 +29,8 @@ class CardDetailsFragment : Fragment()  {
     private lateinit var textViewCardName: TextView
     private lateinit var textViewCardType: TextView
     private lateinit var imageViewCard: ImageView
-    private lateinit var btn : ImageButton
+//    private lateinit var btn : ImageButton
+    private lateinit var btnFav : Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,7 +42,8 @@ class CardDetailsFragment : Fragment()  {
         textViewCardName = view.findViewById(R.id.textViewCardNameDetails)
         textViewCardType = view.findViewById(R.id.textViewCardTypeDetails)
         imageViewCard = view.findViewById(R.id.imageViewCardDetails)
-        btn = view.findViewById(R.id.imageButtonStar)
+//        btn = view.findViewById(R.id.imageButtonStar)
+        btnFav = view.findViewById(R.id.btnAddToFavorites)
 
 
         return view
@@ -62,12 +66,23 @@ class CardDetailsFragment : Fragment()  {
                         imageViewCard.setImageResource(R.drawable.cardv_background)
                     }
 
-                    btn.setOnClickListener {
+//                    btn.setOnClickListener {
+//                        lifecycleScope.launch {
+//                            Log.d("on click favorite", "click $selectedCard")
+//                            decksViewModel.toggleFavoriteStatus(selectedCard)
+//                        }
+//                    }
+
+                    btnFav.setOnClickListener {
                         lifecycleScope.launch {
                             Log.d("on click favorite", "click $selectedCard")
                             decksViewModel.toggleFavoriteStatus(selectedCard)
                         }
                     }
+
+//                    decksViewModel.isCardFavorite.observe(viewLifecycleOwner, Observer { isFavorite ->
+//                        updateFavoriteButtonState(isFavorite)
+//                    })
 
 
                 }
@@ -78,6 +93,17 @@ class CardDetailsFragment : Fragment()  {
         Log.d("CardDetailselectedcard", "otest $test")
     }
 
+    private fun updateFavoriteButtonState(isFavorite: Boolean) {
+        val button = view?.findViewById<Button>(R.id.btnAddToFavorites)
+
+        // Modifiez la couleur du bouton en fonction de l'état
+        val colorResId = if (isFavorite) R.color.colorFavorite else R.color.colorNotFavorite
+        button?.setBackgroundColor(ContextCompat.getColor(requireContext(), colorResId))
+
+        // Mettez à jour le texte ou l'icône du bouton en fonction de l'état
+        val buttonText = if (isFavorite) "Retirer des favoris" else "Ajouter aux favoris"
+        button?.text = buttonText
+    }
 
 //    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 //        super.onViewCreated(view, savedInstanceState)

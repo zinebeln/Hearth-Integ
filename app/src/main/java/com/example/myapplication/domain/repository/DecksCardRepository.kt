@@ -14,10 +14,13 @@ class DecksCardRepository() {
     suspend fun insertDecksCard(decksCard: DecksCard) {
         decksCardDao.insertDeckCard(decksCard)
     }
-    suspend fun deleteDecksCard(decksCard: DecksCard) {
-        decksCardDao.deleteDeckCard(decksCard)
+    suspend fun deleteDeckCard(decksCard: DecksCard) {
+        decksCardDao.deleteDecksCard(decksCard)
     }
 
+    suspend fun getIdDeckCard(cardId: String){
+        decksCardDao.getDecksCardById(cardId)
+    }
 
     fun getAllDecksCards(): LiveData<List<DecksCard>> {
         return decksCardDao.getAllDeckCards()
