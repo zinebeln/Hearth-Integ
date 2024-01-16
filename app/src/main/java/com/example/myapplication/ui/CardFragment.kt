@@ -26,7 +26,7 @@ class CardFragment : Fragment() {
 
     private val cardViewModel: CardViewModel by viewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
-
+    private lateinit var progressBar: ProgressBar
 
 
     override fun onCreateView(
@@ -37,8 +37,11 @@ class CardFragment : Fragment() {
         Log.d("CardFragment", "onCreateView called")
         val rootView = inflater.inflate(R.layout.fragment_card, container, false)
         val recyclerView = rootView.findViewById<RecyclerView>(R.id.cardRecyclerView)
+        progressBar = rootView.findViewById(R.id.progressBar)
         //val prog = rootView.findViewById<ProgressBar>(R.id.progressBar)
-
+        cardViewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
+            progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        })
 
 //        val adapter = CardAdaptater(object : CardAdaptater.OnItemClickListener {
 //            override fun onItemClick(card: Card) {

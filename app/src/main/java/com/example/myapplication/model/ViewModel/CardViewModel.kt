@@ -38,8 +38,10 @@ class CardViewModel(private val repository: CardsRepository) : ViewModel()  {
     }
     @SuppressLint("SuspiciousIndentation")
     suspend fun fetchCards2() {
+//        _isLoading.value = true
+
         if (_cardsList.value.isNullOrEmpty() && _isLoading.value == false)  {
-            _isLoading.value = true
+          _isLoading.value = true
                 try {
                     repository.getCards().collect { cards ->
                         Log.d("CardViewModel", "Received cards from repository: $cards")
