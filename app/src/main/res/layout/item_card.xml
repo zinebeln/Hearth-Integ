@@ -28,8 +28,10 @@
 <!--        android:layout_height="wrap_content"-->
 <!--        android:scaleType="centerCrop" />-->
 
-<!--</LinearLayout>-->
 
+<!--    android:background="@drawable/carde"-->
+<!--</LinearLayout>-->
+<!--    android:foreground="?android:attr/selectableItemBackground"-->
 <!-- item_card.xml -->
 
 <androidx.cardview.widget.CardView
@@ -54,8 +56,9 @@
 <ImageView
 android:id="@+id/imageViewCard"
 android:layout_width="match_parent"
-android:layout_height="120dp"
+android:layout_height="150dp"
 android:scaleType="centerCrop"
+    android:background="@drawable/carde"
     android:contentDescription="@string/card_image" />
 
 <TextView

@@ -2,6 +2,7 @@ package com.example.myapplication
 
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,16 +24,22 @@ import com.example.myapplication.model.ViewModel.SharedViewModel
 
 class CardAdaptater : ListAdapter<Card, CardAdaptater.ViewHolder>(CardDiffCallback()) {
 
-     private var onItem: OnItemClickListener? = null
-     private lateinit var sharedViewModel: SharedViewModel
+    private var onItem: OnItemClickListener? = null
+    private lateinit var sharedViewModel: SharedViewModel
+
+    private val imageNamess =
+        listOf("imagun", "imagedeux", "imagetrois", "imagecinq", "imagesix")
+
 //    private lateinit var onI: SharedViewModel
 
     interface OnItemClickListener {
         fun onItemClick(card: Card)
     }
+
     fun setOnItemClickListener(listener: OnItemClickListener) {
         this.onItem = listener
     }
+
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val cardName: TextView = itemView.findViewById(R.id.textViewName)
         val cardType: TextView = itemView.findViewById(R.id.textViewType)
@@ -51,8 +58,10 @@ class CardAdaptater : ListAdapter<Card, CardAdaptater.ViewHolder>(CardDiffCallba
         }
 
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_card, parent, false)
+        val itemView =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_card, parent, false)
         return ViewHolder(itemView)
     }
 
@@ -69,29 +78,28 @@ class CardAdaptater : ListAdapter<Card, CardAdaptater.ViewHolder>(CardDiffCallba
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(holder.imageCard)
         } else {
-            // Utilisez une image par défaut si la propriété img est null
+
+            val randomImageName = imageNamess.random()
+            val resourceId = holder.itemView.resources.getIdentifier(
+                randomImageName,
+                "drawable",
+                holder.itemView.context.packageName
+            )
+
+
             Glide.with(holder.itemView)
-                .load(R.drawable.cardv_background)
+                .load(resourceId)
                 .apply(RequestOptions().centerCrop())
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(holder.imageCard)
+
+
         }
 
 
     }
 
-
-
-
-
-
-
-
-
-
 }
-
-
 
 class CardDiffCallback : DiffUtil.ItemCallback<Card>() {
     override fun areItemsTheSame(oldItem: Card, newItem: Card): Boolean {

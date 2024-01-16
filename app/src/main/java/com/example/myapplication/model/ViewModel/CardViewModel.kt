@@ -27,6 +27,8 @@ class CardViewModel(private val repository: CardsRepository) : ViewModel()  {
     constructor() : this(CardsRepository()) {
     }
 
+
+
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
 
@@ -36,6 +38,7 @@ class CardViewModel(private val repository: CardsRepository) : ViewModel()  {
     init {
         _isLoading.value = false
     }
+
     @SuppressLint("SuspiciousIndentation")
     suspend fun fetchCards2() {
 //        _isLoading.value = true
@@ -57,7 +60,9 @@ class CardViewModel(private val repository: CardsRepository) : ViewModel()  {
                     _isLoading.value = false
                 }
             }
-        }
+    }
+
+
 
   // }
 
