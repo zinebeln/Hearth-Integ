@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <!-- ImageView pour l'image de fond -->
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/register"
+        android:scaleType="centerCrop"
+        android:contentDescription="@null"
+        android:background="@android:color/black"/>
+
+<!--<LinearLayout-->
+<!--    xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    xmlns:tools="http://schemas.android.com/tools"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:orientation="vertical"-->
+<!--    android:padding="16dp"-->
+<!--    >-->
+<!--    tools:context=".UserFragment"-->
+
+    <!-- ImageView pour le titre -->
+
+
+    <LinearLayout
+        android:id="@+id/btn"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="340dp"
+            android:layout_marginBottom="1dp"
+
+            android:src="@drawable/titre" />
+
+        <!--        <EditText-->
+        <!--            android:id="@+id/etUsername"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:hint="Nom d'utilisateur" />-->
+
+        <EditText
+            android:id="@+id/etUsername"
+            android:layout_width="247dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="65dp"
+            android:background="@drawable/rounded_edittext_style"
+            android:drawableLeft="@drawable/baseline_account_box_24"
+            android:drawablePadding="8dp"
+            android:hint="Nom d'utilisateur"
+            android:inputType="text"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp" />
+
+        <EditText
+            android:id="@+id/etPassword"
+            android:layout_width="247dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="65dp"
+            android:layout_marginBottom="35dp"
+            android:background="@drawable/rounded_edittext_style"
+            android:drawableLeft="@drawable/baseline_lock_24"
+            android:hint="Mot de passe"
+            android:drawablePadding="8dp"
+            android:inputType="textPassword"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp" />
+
+        <Button
+            android:id="@+id/btnLogin"
+            android:layout_width="350dp"
+            android:layout_marginLeft="18dp"
+            android:layout_marginBottom="16dp"
+            android:layout_height="wrap_content"
+            android:text="Se connecter"
+            android:background="@drawable/rounded_button_background"
+            />
+
+        <Button
+            android:id="@+id/btnCreateAccount"
+            android:layout_width="350dp"
+            android:layout_marginLeft="18dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/rounded_button_background"
+            android:layout_height="wrap_content"
+            android:text="Creer un compte" />
+
+
+    </LinearLayout>
+</RelativeLayout>
+

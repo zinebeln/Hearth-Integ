@@ -1,5 +1,6 @@
 package com.example.myapplication.model
 
+import androidx.compose.material3.Card
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.myapplication.Card

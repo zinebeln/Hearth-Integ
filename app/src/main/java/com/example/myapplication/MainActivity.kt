@@ -1,137 +1,67 @@
 package com.example.myapplication
 
-import android.content.Intent
+
+import android.annotation.SuppressLint
+
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-
-
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import retrofit2.Call
-import retrofit2.Response
-import retrofit2.Callback
-
-
-
 import android.util.Log
-import android.widget.Button
-import android.widget.Toast
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import com.example.myapplication.dataSource.APIDataSource
-import com.example.myapplication.dataSource.APIDataSource.retrofit
-import com.example.myapplication.model.CardViewModel
-import com.example.myapplication.repository.HearthstoneRepository
+
+
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+
+import com.example.myapplication.model.ViewModel.CardViewModel
+import com.example.myapplication.ui.UserFragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
+
 
 
 class MainActivity : AppCompatActivity() {
 
-    //val retrofit = Retrofit.Builder()
-      //  .baseUrl("https://omgvamp-hearthstone-v1.p.rapidapi.com/info/?rapidapi-key=83de557c75mshf10e086e2ef22f9p1eb351jsnebdd8be1665d")
-      //    .addConverterFactory(GsonConverterFactory.create())
-      //  .build()
+    private lateinit var infoViewModelCard: CardViewModel
 
-    // Initialisez Retrofit avec le convertisseur Gson
-    private lateinit var cardViewModel: CardViewModel
+
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
-        val cardList: MutableList<Card> = ArrayList()
-       // val cardAdapter = CardAdaptater(cardList)
-        val button : Button = findViewById(R.id.openCardListButton)
 
-        val layoutManager = LinearLayoutManager(this)
-        recyclerView.layoutManager = layoutManager
-        //recyclerView.adapter = cardAdapter
-
-        val adapter = CardAdaptater(emptyList())
-        recyclerView.adapter = adapter
-
-        val hearthstoneApiService = retrofit.create(ApiService::class.java)
-        val repository = HearthstoneRepository(hearthstoneApiService)
-
-        cardViewModel = ViewModelProvider(this, CardViewModelFactory(repository)).get(CardViewModel::class.java)
-
-       /* cardViewModel.cardsLiveData.observe(this, Observer { cards ->
-            // Mettez à jour votre adaptateur avec les données
-            //adapter.updateData(cards)
-            if (cards != null ) {
-                // Par exemple, utilisez une RecyclerView pour afficher la liste de cartes.
-                val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
-                recyclerView.layoutManager = LinearLayoutManager(this)
-                recyclerView.adapter = CardAdaptater(cardList)
-
-            }
+        val navController = findNavController(R.id.nav_host_fragment)
+       // val appBarConfiguration = AppBarConfiguration(navController.graph)
+        val appBarConfiguration = AppBarConfiguration(setOf(R.id.cardFragment, R.id.section2Fragment, R.id.section3Fragment))
 
 
 
+//        val fragmentContainer = findViewById<FrameLayout>(R.id.fragmentContainer)
+//        val buttonOpenFragment = findViewById<Button>(R.id.buttonOpenFragment)
 
-            Toast.makeText(this, cards.toString(), Toast.LENGTH_SHORT).show()
-        })
-   */
-        cardViewModel.fetchCards()
-
-        button.setOnClickListener{
-            // Code pour ouvrir une nouvelle activité ou fragment ici.
-            // Par exemple, pour ouvrir une nouvelle activité :
-            val intent = Intent(this, CardEnum::class.java)
-            startActivity(intent)
-
-        }
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        // Utilisez setupActionBarWithNavController et fournissez null comme paramètre
 
 
-        /*
-       APIDataSource.hearthstoneApiService.getCards().enqueue { response, throwable ->
-            if (response != null && response.isSuccessful) {
-                // Traitez la réponse ici
-                val cards = response.body()
-                Log.d("API_INFO", "Version: ${response.body()?.patch}")
-                if (cards != null) {
-                    // Faites quelque chose avec les cartes
-                    Log.d("API_INFO", "Patch: ${response}")
-                }
-                cards?.classes?.forEach { card ->
-                    Log.d("API_SUCCESS", "Appel API réussi. Nombre de cartes récupérées : ${card}")
+                   //  val bottomNavigation: BottomNavigationView = findViewById(R.id.bottomNavigation)
 
-                    // Vous pouvez ajouter d'autres propriétés de la carte ici
-                }
-            } else {
-                // Gérez les erreurs ici en cas de réponse non réussie ou d'échec de la requête
-                Log.e("API_ERROR", "Erreur lors de l'appel API. Code d'erreur : ${response}")
 
-                if (throwable != null) {
-                    // Gérez les erreurs de réseau ici (throwable contient l'exception)
-                    Log.e("NETWORK_ERROR", "Erreur réseau : ${throwable.message}")
-                } else {
-                    // Gérez les erreurs de réponse ici
-                    Log.e("NETWORK_ERROR", "Erreur réseau : ")
-                }
-            }
-        }
-
+        // Assurez-vous que cette ligne est présente pour lier BottomNavigationView et NavController
+                 //   bottomNavigation.setupWithNavController(navController)
+//        Log.d("MainActivity", "Avant la transaction de fragment")
+//        if (savedInstanceState == null) {
+//            supportFragmentManager.beginTransaction()
+//                .replace(R.id.nav_host_fragment, UserFragment())
+//                .addToBackStack(null)
+//                .commit()
+//        }
+//        Log.d("MainActivity", "Après la transaction de fragment")
     }
 
-    fun <T> Call<T>.enqueue(callback: (Response<T>?, Throwable?) -> Unit) {
-        enqueue(object : Callback<T> {
-            override fun onResponse(call: Call<T>, response: Response<T>) {
-                callback(response, null)
-            }
-
-            override fun onFailure(call: Call<T>, t: Throwable) {
-                callback(null, t)
-            }
-        })
-
-         */
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment)
+        return navController.navigateUp() || super.onSupportNavigateUp()
     }
-
-
-
-
-
-
 }
 
 

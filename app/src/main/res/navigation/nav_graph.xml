@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--<navigation xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    android:id="@+id/nav_graph.xml">-->
+
+<!--</navigation>-->
+
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/userFragment">
+
+    <fragment
+        android:id="@+id/userFragment"
+        android:name="com.example.myapplication.ui.UserFragment"
+        android:label="Authentification"
+        tools:layout="@layout/fragment_user" />
+
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.example.myapplication.ui.SignUpFragment"
+        android:label="Sign Up"
+        tools:layout="@layout/fragment_sign_up" />
+
+    <action
+        android:id="@+id/action_userFragment_to_signUpFragment"
+        app:destination="@id/signUpFragment" />
+
+    <fragment
+        android:id="@+id/cardFragment"
+        android:name="com.example.myapplication.ui.CardFragment"
+        android:label="Cards"
+        tools:layout="@layout/fragment_card" >
+
+        <action
+            android:id="@+id/action_cardFragment_self"
+            app:destination="@id/cardFragment" />
+        <action
+            android:id="@+id/action_cardFragment_to_deckFragment"
+            app:destination="@id/section2Fragment" />
+        <action
+            android:id="@+id/action_cardFragment_to_profilFragment"
+            app:destination="@id/section3Fragment" />
+        <action
+            android:id="@+id/action_cardFragment_to_cardDetailsFragment"
+            app:destination="@id/cardDetailsFragment">
+
+        </action>
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/cardDetailsFragment"
+        android:name="com.example.myapplication.ui.CardDetailsFragment"
+        android:label="Card Details"
+        tools:layout="@layout/fragment_card_details">
+
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/section2Fragment"
+        android:name="com.example.myapplication.ui.DecksFragment"
+        android:label="Decks"
+        tools:layout="@layout/fragment_decks">
+        <action
+            android:id="@+id/action_decksFragment_self"
+            app:destination="@id/section2Fragment" />
+    <action
+        android:id="@+id/action_deckFragment_to_cardFragment"
+        app:destination="@id/cardFragment" />
+    <action
+        android:id="@+id/action_deckFragment_to_profilFragment"
+        app:destination="@id/section3Fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/section3Fragment"
+        android:name="com.example.myapplication.ui.ProfilFragment"
+        android:label="Profil"
+        tools:layout="@layout/fragment_profil" >
+        <action
+            android:id="@+id/action_profilFragment_self"
+            app:destination="@id/section3Fragment" />
+    <action
+        android:id="@+id/action_profilFragment_to_cardFragment"
+        app:destination="@id/cardFragment" />
+    <action
+        android:id="@+id/action_profilFragment_to_deckFragment"
+        app:destination="@id/section2Fragment" />
+        <action
+            android:id="@+id/action_profilFragment_to_userFragment"
+            app:destination="@id/userFragment" />
+
+    </fragment>
+
+
+
+
+    <action
+        android:id="@+id/action_userFragment_to_cardFragment"
+        app:destination="@id/cardFragment"
+        app:popUpTo="@id/userFragment"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_cardFragment_to_cardFragment"
+        app:destination="@id/cardFragment" />
+
+    <action
+        android:id="@+id/action_cardFragment_to_section2Fragment"
+        app:destination="@id/section2Fragment" />
+
+    <action
+        android:id="@+id/action_cardFragment_to_section3Fragment"
+        app:destination="@id/section3Fragment" />
+
+    <action
+        android:id="@+id/action_open_decks_fragment"
+        app:destination="@id/section2Fragment" />
+
+
+    <!-- Ajoutez d'autres destinations de navigation si nécessaire -->
+
+</navigation>

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "135564097808",
+    "project_id": "hearthstone-62943",
+    "storage_bucket": "hearthstone-62943.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:135564097808:android:90bf53fefe6c51589c0d95",
+        "android_client_info": {
+          "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJWYyfHJiGt-XvxhYLtAleERC0NFmTyPg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

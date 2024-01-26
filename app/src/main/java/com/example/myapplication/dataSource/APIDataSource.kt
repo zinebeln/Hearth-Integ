@@ -1,6 +1,6 @@
 package com.example.myapplication.dataSource
 
-import com.example.myapplication.ApiService
+import com.example.myapplication.domain.ApiService
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

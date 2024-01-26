@@ -1,0 +1,7 @@
+<?xml version ="1.0" encoding ="utf-8"?><!--  Learn More about how to use App Actions: https://developer.android.com/guide/actions/index.html -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Couleur pour l'élément sélectionné -->
+    <item android:color="?attr/colorPrimary" android:state_checked="true" />
+    <!-- Couleur pour l'élément non sélectionné (par défaut) -->
+    <item android:color="?android:attr/textColorSecondary" />
+</selector>
