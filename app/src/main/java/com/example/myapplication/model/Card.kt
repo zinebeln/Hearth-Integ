@@ -8,6 +8,7 @@ import androidx.room.PrimaryKey
 import java.io.Serializable
 @Entity(tableName = "Card")
 data class Card(
+
     @PrimaryKey val cardId: String = "popo",
     val dbfId: Int,
     val name: String,

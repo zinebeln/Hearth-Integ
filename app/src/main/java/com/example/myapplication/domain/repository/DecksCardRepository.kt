@@ -14,6 +14,10 @@ class DecksCardRepository() {
     suspend fun insertDecksCard(decksCard: DecksCard) {
         decksCardDao.insertDeckCard(decksCard)
     }
+
+    suspend fun insertDecksCard2(decksCard: DecksCard) {
+        decksCardDao.insertDeckCard(decksCard)
+    }
     suspend fun deleteDeckCard(decksCard: DecksCard) {
         decksCardDao.deleteDecksCard(decksCard)
     }
@@ -25,4 +29,12 @@ class DecksCardRepository() {
     fun getAllDecksCards(): LiveData<List<DecksCard>> {
         return decksCardDao.getAllDeckCards()
     }
+
+    fun getAllDecksCards2(userId : Long): LiveData<List<DecksCard>> {
+        return decksCardDao.getDeckCardsForUser(userId)
+    }
+    //changement ici
+//    suspend fun getDeckCardsForUser(userId: String): List<DecksCard> {
+//        return decksCardDao.getDeckCardsForUser(userId)
+//    }
 }

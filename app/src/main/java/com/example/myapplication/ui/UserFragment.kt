@@ -34,16 +34,23 @@ class UserFragment : Fragment() {
     private lateinit var btnLogin: Button
     private lateinit var btnCreateAccount: Button
     private lateinit var auth: AuthManager
+   // private lateinit var userRepository: UserRepository
     val userDao = AppDatabase.getDatabase().userDao()
 
+//    override fun onAttach(context: Context) {
+//        super.onAttach(context)
+//        // Initialiser userRepository ici
+//        userRepository = UserRepository()
+//    }
     private val authViewModel: UserViewModel by viewModels {
-        UserViewModelFactory(UserRepository(userDao))
+        UserViewModelFactory(UserRepository())
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         authViewModel.userLoggedIn.observe(viewLifecycleOwner, Observer { userLoggedIn ->
+
             Log.d("UserFragment", "User logged in: $userLoggedIn")
             if (userLoggedIn) {
                 Toast.makeText(requireContext(), "Utilisateur connecté avec succès", Toast.LENGTH_SHORT).show()
@@ -62,6 +69,7 @@ class UserFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_user, container, false)
         auth = AuthManager(requireContext())
+       // auth = AuthManager(userRepository)
         etUsername = view.findViewById(R.id.etUsername)
         etPassword = view.findViewById(R.id.etPassword)
         btnLogin = view.findViewById(R.id.btnLogin)
@@ -75,9 +83,19 @@ class UserFragment : Fragment() {
                 if (isSuccessful) {
                     Toast.makeText(requireContext(), "Connexion réussie", Toast.LENGTH_SHORT).show()
                     val authManager = AuthManager(requireContext())
+                   // val authManager = AuthManager(userRepository)
                     authManager.setLoggedIn(true)
+//                    lifecycleScope.launch {
+//                        authManager.setLoggedIn(true)
+//                    }
                     val newUser = User(username = username, password = password)
                     auth.setUser(newUser)
+//                    lifecycleScope.launch {
+//                        auth.setUser(newUser)
+//                    }
+                    // Lorsque l'utilisateur se connecte
+//                    authViewModel.updateUserLoginStatus(username, true)
+
                     Log.d("UserFragment", "Avant la navigation vers CardFragment")
 
                     // Stocker l'identifiant dans les préférences partagées
@@ -86,6 +104,8 @@ class UserFragment : Fragment() {
                         putString("username", username)
                         apply()
                     }
+
+//                    val loggedInUser = authViewModel.getLoggedInUser()
 
                     findNavController().navigate(R.id.action_userFragment_to_cardFragment)
                     Log.d("UserFragment", "Après la navigation vers CardFragment")

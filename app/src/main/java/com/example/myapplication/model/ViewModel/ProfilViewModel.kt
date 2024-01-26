@@ -17,7 +17,8 @@ class ProfilViewModel(private val userRepository: UserRepository) : ViewModel() 
     val navigateToUserFragment: LiveData<Boolean> get() = _navigateToUserFragment
 
     @Suppress("unused")
-    constructor() : this(UserRepository(AppDatabase.getDatabase().userDao())) {
+//    constructor() : this(UserRepository(AppDatabase.getDatabase().userDao())) {
+        constructor() : this(UserRepository()) {
         // Initialisations supplémentaires si nécessaire
     }
     fun deleteAccount(user: User) {

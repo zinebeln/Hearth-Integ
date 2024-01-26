@@ -27,7 +27,7 @@ abstract class AppDatabase : RoomDatabase() {
 
     companion object {
 
-        private lateinit var instance: AppDatabase
+        private var instance: AppDatabase? = null
 
         fun initDatabase(context: Context) {
             instance = Room.databaseBuilder(
@@ -43,6 +43,19 @@ abstract class AppDatabase : RoomDatabase() {
         fun getDatabase(): AppDatabase {
             return instance ?: throw IllegalStateException("Database not initialized")
         }
+
+//        fun getDatabasee(context: Context): AppDatabase {
+//            synchronized(this) {
+//                if (instance == null) {
+//                    instance = Room.databaseBuilder(
+//                        context.applicationContext,
+//                        AppDatabase::class.java,
+//                        "hearth-stone"
+//                    ).build()
+//                }
+//                return instance!!
+//            }
+//        }
 
 
         val migration1to2 = object : Migration(1, 2) {

@@ -27,6 +27,7 @@ class ProfilFragment : Fragment()  {
     private val viewModel: ProfilViewModel  by viewModels()
     private lateinit var authViewModel: AuthManager
     private lateinit var userObserver: Observer<User>
+   // private lateinit var userRepository: UserRepository
 
 //    override fun onDestroyView() {
 //        // Retirez l'observation lors de la destruction de la vue
@@ -40,6 +41,8 @@ class ProfilFragment : Fragment()  {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_profil, container, false)
         authViewModel = AuthManager(requireContext())
+
+//        authViewModel = AuthManager(userRepository)
         textUsername = view.findViewById(R.id.textUsername)
 
         // Récupérer l'identifiant depuis les préférences partagées

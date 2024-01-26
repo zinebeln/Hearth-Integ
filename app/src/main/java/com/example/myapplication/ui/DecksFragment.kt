@@ -10,6 +10,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
+
+
+import androidx.lifecycle.viewModelScope
+
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -19,11 +24,13 @@ import com.example.myapplication.R
 import com.example.myapplication.model.DecksCard
 import com.example.myapplication.model.ViewModel.DecksViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.coroutines.launch
 
 class DecksFragment : Fragment()  {
    // private val deckViewModel: DecksViewModel by activityViewModels()
     private val deckViewModel: DecksViewModel by viewModels()
 //    private val decksAdapter = DecksAdapter()
+
 
 
 
@@ -36,13 +43,11 @@ class DecksFragment : Fragment()  {
         val bottomNavigationView = view.findViewById<BottomNavigationView>(R.id.bottomNavigationDecks)
        // decksAdapter = DecksAdapter(emptyList())
        // recyclerView.adapter = decksAdapter
-
         val decksAdapter = DecksAdapter(object : DecksAdapter.OnItemClickListener {
             override fun onItemClicked(decksCard: DecksCard) {
                 showConfirmationDialog(decksCard)
             }
         })
-
         recyclerView.adapter = decksAdapter
 
         // Ajoutez cette ligne pour définir un LinearLayoutManager
@@ -51,16 +56,53 @@ class DecksFragment : Fragment()  {
             layoutManager = GridLayoutManager(requireContext(), 2) // 2 colonnes, ajustez selon vos besoins
         }
 
-        // ...
-        deckViewModel.decksCards.observe(viewLifecycleOwner, Observer { decksCards ->
 
+
+
+        deckViewModel.decksCards.observe(viewLifecycleOwner, Observer { decksCards ->
             decksAdapter.submitList(decksCards)
         })
 
         deckViewModel.cardDeletedEvent.observe(viewLifecycleOwner, Observer {
             // Mettez à jour la liste des cartes ou effectuez d'autres actions nécessaires
-            deckViewModel.refreshDeckCards() // Assurez-vous d'avoir une fonction pour rafraîchir vos données
+           // deckViewModel.refreshDeckCards() // Assurez-vous d'avoir une fonction pour rafraîchir vos données
+            deckViewModel.refreshDeckCards2()
         })
+
+//        lifecycleScope.launch {
+//            deckViewModel.refreshDeckCardsForLoggedInUser()
+//        }
+
+//        deckViewModel.decksCards.observe(viewLifecycleOwner, Observer { decksCards ->
+//            // Mise à jour de l'adaptateur avec la nouvelle liste de decksCards
+//            decksAdapter.submitList(decksCards)
+//        })
+
+
+
+
+
+
+//        lifecycleScope.launch {
+//            deckViewModel.getDeckCardsForLoggedInUser().observe(viewLifecycleOwner, Observer { deckCards ->
+//                // Faites quelque chose avec les DeckCards de l'utilisateur connecté
+//            })
+//        }
+
+
+
+
+
+        // ...
+//        deckViewModel.decksCards.observe(viewLifecycleOwner, Observer { decksCards ->
+//
+//            decksAdapter.submitList(decksCards)
+//        })
+
+//        deckViewModel.cardDeletedEvent.observe(viewLifecycleOwner, Observer {
+//            // Mettez à jour la liste des cartes ou effectuez d'autres actions nécessaires
+//            deckViewModel.refreshDeckCards() // Assurez-vous d'avoir une fonction pour rafraîchir vos données
+//        })
 
         deckViewModel.errorMessage.observe(viewLifecycleOwner, Observer { errorMessageResId ->
             // Utilisez la ressource de chaîne pour afficher le message d'erreur
@@ -68,7 +110,6 @@ class DecksFragment : Fragment()  {
             Toast.makeText(requireContext(), "Erreur : doublons carte favoris", Toast.LENGTH_SHORT)
             // Affichez le message d'erreur, par exemple, dans un Toast ou à l'aide d'une vue TextView
         })
-
 
         val navController = findNavController()
         // Attachez le NavController au BottomNavigationView
@@ -92,6 +133,8 @@ class DecksFragment : Fragment()  {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
 
         // Utilisez le ViewModel pour observer les changements dans la liste des favoris
 

@@ -16,6 +16,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.RequestOptions
 import com.example.myapplication.R
 import com.example.myapplication.model.ViewModel.DecksViewModel
 import com.example.myapplication.model.ViewModel.SharedViewModel
@@ -31,6 +33,11 @@ class CardDetailsFragment : Fragment()  {
     private lateinit var imageViewCard: ImageView
 //    private lateinit var btn : ImageButton
     private lateinit var btnFav : Button
+    private lateinit var auth: AuthManager
+
+    private val imageNamess =
+        listOf("imagun", "imagedeux", "imagetrois", "imagecinq", "imagesix")
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,6 +58,8 @@ class CardDetailsFragment : Fragment()  {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
 
+        auth = AuthManager(requireContext())
+
         sharedViewModel.selectedCard?.observe(viewLifecycleOwner, Observer { selectedCard ->
             Log.d("CardDetailsFragment", "Selected Card: $selectedCard")
 
@@ -58,12 +67,34 @@ class CardDetailsFragment : Fragment()  {
                     textViewCardName.text = it.name
                     textViewCardType.text = it.type
 
+//                    if (it.img != null) {
+//                        Glide.with(this)
+//                            .load(it.img)
+//                            .into(imageViewCard)
+//                    } else {
+//                        imageViewCard.setImageResource(R.drawable.cardv_background)
+//                    }
+
+
                     if (it.img != null) {
                         Glide.with(this)
                             .load(it.img)
                             .into(imageViewCard)
                     } else {
-                        imageViewCard.setImageResource(R.drawable.cardv_background)
+                        val randomImageName = imageNamess.random()
+                        val ressourceId = this.resources.getIdentifier(
+                            randomImageName,
+                            "drawable",
+                           this.context?.packageName
+                        )
+
+                        Glide.with(this)
+                            .load(ressourceId)
+                            .apply(RequestOptions().centerCrop())
+                            .transition(DrawableTransitionOptions.withCrossFade())
+                            .into(imageViewCard)
+
+
                     }
 
 //                    btn.setOnClickListener {
@@ -76,7 +107,8 @@ class CardDetailsFragment : Fragment()  {
                     btnFav.setOnClickListener {
                         lifecycleScope.launch {
                             Log.d("on click favorite", "click $selectedCard")
-                            decksViewModel.toggleFavoriteStatus(selectedCard)
+                            decksViewModel.toggleFavoriteStatus2(selectedCard, auth.user.value?.userId)
+                            //decksViewModel.toggleFavoriteStatus(selectedCard)
                         }
                     }
 

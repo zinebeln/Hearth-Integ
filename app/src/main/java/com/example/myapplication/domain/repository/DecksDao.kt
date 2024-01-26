@@ -6,6 +6,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.example.myapplication.model.Card
 import com.example.myapplication.model.DecksCard
 
 
@@ -22,4 +23,10 @@ interface DecksDao {
 
     @Query("SELECT * FROM decks_cards WHERE cardId = :cardId")
     suspend fun getDecksCardById(cardId: String): DecksCard?
+
+    //changement ici
+    @Query("SELECT * FROM decks_cards WHERE userId = :userId")
+     fun getDeckCardsForUser(userId: Long): LiveData<List<DecksCard>>
+
+
 }

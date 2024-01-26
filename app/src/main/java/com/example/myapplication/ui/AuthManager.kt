@@ -4,25 +4,92 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import com.example.myapplication.domain.repository.UserRepository
 import com.example.myapplication.model.User
+import kotlinx.coroutines.launch
 
+//class AuthManager( private val userRepository: UserRepository) {
 class AuthManager(context: Context) {
+
     private val preferences = context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
     private val isLoggedInKey = "isLoggedIn"
+    private val userIdKey = "userId"
+
+    private val _userLoggedIn = MutableLiveData<Boolean>()
+    val userLoggedIn: LiveData<Boolean> = _userLoggedIn
+
     private val _user = MutableLiveData<User>()
-    val user: LiveData<User> get() = _user
+    val user : LiveData<User> = _user
 
+    private val _userId = MutableLiveData<Long>()
+    val userId: LiveData<Long> = _userId
+   // val user: LiveData<User> get() = userRepository.loggedInUser
 
-    fun setLoggedIn(isLoggedIn: Boolean) {
-        preferences.edit().putBoolean(isLoggedInKey, isLoggedIn).apply()
+    init {
+        // Initialise l'état de connexion et l'utilisateur depuis les préférences partagées lors de la création de l'AuthManager.
+        _userLoggedIn.value = isLoggedIn()
+        val userId = preferences.getLong(userIdKey, 0)
+        if (userId != 0L) {
+            // Charge l'utilisateur depuis la source de données appropriée (par exemple, votre base de données) en utilisant l'ID stocké.
+            // user.postValue(loadUserById(userId))
+        }
     }
 
-    fun isLoggedIn(): Boolean {
-        return preferences.getBoolean(isLoggedInKey, false)
+
+
+//    fun setLoggedIn(isLoggedIn: Boolean) {
+//        preferences.edit().putBoolean(isLoggedInKey, isLoggedIn).apply()
+//       // userRepository.updateUserLoginStatus(userr.value?.username, true)
+//
+//    }
+
+    fun setLoggedIn(isLoggedIn: Boolean, userId: Long? = null) {
+        _userLoggedIn.value = isLoggedIn
+        if (isLoggedIn) {
+            userId?.let {
+                preferences.edit().putLong(userIdKey, it).apply()
+                setUserId(it)
+                // Enregistre l'utilisateur avec l'ID dans votre source de données (par exemple, votre base de données).
+                // saveUserById(it, _user.value)
+            }
+        } else {
+            preferences.edit().remove(userIdKey).apply()
+            // Supprime l'utilisateur de votre source de données.
+            // deleteUser()
+        }
     }
+
+
+
+     fun isLoggedIn(): Boolean {
+       return preferences.getBoolean(isLoggedInKey, false)
+       // return userRepository.isUserLoggedIn()
+    }
+
+//    suspend fun isLoggedInL(): Boolean {
+//        return userRepository.isUserLoggedIn()
+//    }
+
+//    fun setUser(user: User) {
+//        Log.d("AuthManager", "User set: $user")
+//        _user.value = user
+//    }
 
     fun setUser(user: User) {
+        // Utilisez la méthode correspondante dans UserRepository pour définir l'utilisateur.
+       // userRepository.registerUser2(user)
         Log.d("AuthManager", "User set: $user")
         _user.value = user
+
     }
+
+    fun setUserId(userId: Long) {
+        _userId.value = userId
+    }
+
+
+//    suspend fun getLoggedInUserId(): String? {
+//        return userRepository.getLoggedInUserId()
+//    }
 }

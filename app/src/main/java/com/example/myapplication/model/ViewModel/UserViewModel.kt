@@ -17,6 +17,8 @@ class UserViewModel (private val userRepository: UserRepository) : ViewModel()  
     val userLoggedIn: LiveData<Boolean> = _userLoggedIn
 
 
+
+
 //    val userDao = AppDatabase.getDatabase().userDao()
 //    private val userRepositoryy = UserRepository(userDao)
 
@@ -56,6 +58,22 @@ class UserViewModel (private val userRepository: UserRepository) : ViewModel()  
             val user = userRepository.getUserByUsername(username)
             val isLoginSuccessful = user?.password == password
             onLoginResult(isLoginSuccessful)
+
+
         }
     }
+
+//   fun updateUserLoginStatus(username: String, isLoggedIn: Boolean) {
+//       viewModelScope.launch {
+//           userRepository.updateUserLoginStatus(username, isLoggedIn)
+//       }
+//    }
+
+//     fun getLoggedInUser() {
+//
+//         viewModelScope.launch {
+//            val user = userRepository.getLoggedInUser()
+//         }
+//
+//    }
 }
