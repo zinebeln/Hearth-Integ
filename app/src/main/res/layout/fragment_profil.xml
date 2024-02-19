@@ -93,6 +93,16 @@
 
         android:text="Changer le mot de passe" />
 
+        <Button
+            android:id="@+id/btnDeconnexion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btnDeleteAccount"
+            android:layout_marginLeft="140dp"
+            android:layout_marginTop="10dp"
+
+            android:text="Deconnexion" />
+
     </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

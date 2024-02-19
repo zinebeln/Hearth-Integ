@@ -6,10 +6,15 @@ import com.example.myapplication.model.User
 //import kotlin.coroutines.jvm.internal.CompletedContinuation.context
 
 import android.content.Context
+import android.util.Log
+import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LiveData
 import com.example.myapplication.ui.AuthManager
 import dataBase.AppDatabase
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 //class UserRepository(private val userDao: DaoUser) {
@@ -21,6 +26,21 @@ class UserRepository() {
 
     suspend fun registerUser2(user: User) {
         userDao.insert(user)
+    }
+
+    suspend fun isUsernameAvailable(username: String): Boolean {
+        // Vérifiez si le nom d'utilisateur existe déjà dans la base de données
+        val existingUser = userDao.getUserByUsername(username)
+        return existingUser == null // Renvoie true si le nom d'utilisateur est disponible, sinon false
+    }
+    suspend fun registerUserr(user: User) {
+
+            userDao.insert(user)
+
+    }
+
+    suspend fun updateUserLoggedInStatus(userId: Long, isLoggedIn: Boolean) {
+        userDao.updateUserLoggedInStatus(userId, isLoggedIn)
     }
 
 //    suspend fun getUserId(user: User) {
@@ -35,6 +55,7 @@ class UserRepository() {
             userDao.insert(user)
         } else {
             // Gérer le cas où le nom d'utilisateur existe déjà
+
            // showUsernameExistsPopup(requireContext())
         }
     }

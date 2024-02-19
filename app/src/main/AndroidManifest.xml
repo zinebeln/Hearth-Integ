@@ -29,11 +29,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".CardEnum">
 
 
-            <!-- Autres attributs de l'activité -->
-        </activity>
+
     </application>
 
 </manifest>

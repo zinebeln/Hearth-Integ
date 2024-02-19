@@ -31,7 +31,7 @@
     <EditText
         android:id="@+id/etNewUsername"
         android:layout_width="247dp"
-        android:layout_height="45dp"
+        android:layout_height="60dp"
         android:layout_below="@id/titre"
         android:layout_gravity="center_vertical"
         android:layout_marginTop="16dp"
@@ -44,37 +44,97 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp" />
 
-    <EditText
-        android:id="@+id/etNewPassword"
-        android:layout_width="247dp"
-        android:layout_height="45dp"
-        android:layout_below="@id/etNewUsername"
-        android:layout_gravity="center_vertical"
-        android:layout_marginTop="16dp"
-        android:layout_marginLeft="85dp"
-        android:background="@drawable/rounded_edittext_style"
-        android:drawableLeft="@drawable/baseline_lock_24"
-        android:drawablePadding="8dp"
-        android:hint="Mot de passe"
-        android:inputType="text"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp" />
 
-        <EditText
-            android:id="@+id/etNewConfirmPassword"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/PasswordTextInputLayout"
             android:layout_width="247dp"
-            android:layout_height="45dp"
-            android:layout_below="@id/etNewPassword"
+            android:layout_height="80dp"
+            android:layout_below="@id/etNewUsername"
             android:layout_gravity="center_vertical"
             android:layout_marginTop="16dp"
             android:layout_marginLeft="85dp"
-            android:background="@drawable/rounded_edittext_style"
-            android:drawableLeft="@drawable/baseline_lock_24"
-            android:drawablePadding="8dp"
-            android:hint="Confirmer mot de passe"
-            android:inputType="text"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp" />
+            app:hintEnabled="false"
+            app:helperText="Mot de passe"
+            app:helperTextTextColor="@color/white"
+            app:endIconMode="password_toggle"
+            app:startIconDrawable="@drawable/baseline_lock_24"
+            app:startIconTint="@color/black"
+            >
+
+            <EditText
+                android:id="@+id/etNewPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:background="@drawable/rounded_edittext_style"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+
+              />
+        </com.google.android.material.textfield.TextInputLayout>
+
+<!--    <EditText-->
+<!--        android:id="@+id/etNewPassword"-->
+<!--        android:layout_width="247dp"-->
+<!--        android:layout_height="45dp"-->
+<!--        android:layout_below="@id/etNewUsername"-->
+<!--        android:layout_gravity="center_vertical"-->
+<!--        android:layout_marginTop="16dp"-->
+<!--        android:layout_marginLeft="85dp"-->
+<!--        android:background="@drawable/rounded_edittext_style"-->
+<!--        android:drawableLeft="@drawable/baseline_lock_24"-->
+<!--        android:drawablePadding="8dp"-->
+<!--        android:hint="Mot de passe"-->
+<!--        android:inputType="textPassword"-->
+<!--        android:paddingStart="16dp"-->
+<!--        android:paddingEnd="16dp" />-->
+
+<!--        <EditText-->
+<!--            android:id="@+id/etNewConfirmPassword"-->
+<!--            android:layout_width="247dp"-->
+<!--            android:layout_height="45dp"-->
+<!--            android:layout_below="@id/etNewPassword"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:layout_marginTop="16dp"-->
+<!--            android:layout_marginLeft="85dp"-->
+<!--            android:background="@drawable/rounded_edittext_style"-->
+<!--            android:drawableLeft="@drawable/baseline_lock_24"-->
+<!--            android:drawablePadding="8dp"-->
+<!--            android:hint="Confirmer mot de passe"-->
+<!--            android:inputType="textPassword"-->
+<!--            android:paddingStart="16dp"-->
+<!--            android:paddingEnd="16dp" />-->
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/confirmPasswordTextInputLayout"
+            android:layout_width="247dp"
+            android:layout_height="80dp"
+            android:layout_below="@id/PasswordTextInputLayout"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="0dp"
+            android:layout_marginLeft="85dp"
+            app:hintEnabled="false"
+            app:helperText="Confirmer mot de passe"
+            app:helperTextTextColor="@color/white"
+            app:endIconMode="password_toggle"
+            app:startIconDrawable="@drawable/baseline_lock_24"
+            app:startIconTint="@color/black"
+            >
+
+            <EditText
+                android:id="@+id/etNewConfirmPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:background="@drawable/rounded_edittext_style"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:drawableLeft="@drawable/baseline_lock_24"
+                android:drawablePadding="8dp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+
 
         <Button
             android:id="@+id/btnSignUp"
@@ -82,7 +142,7 @@
             android:layout_marginLeft="18dp"
             android:layout_marginBottom="16dp"
             android:layout_marginTop="50dp"
-            android:layout_below="@id/etNewConfirmPassword"
+            android:layout_below="@id/confirmPasswordTextInputLayout"
             android:background="@drawable/rounded_button_background"
             android:layout_height="wrap_content"
             android:text="Creer un compte" />

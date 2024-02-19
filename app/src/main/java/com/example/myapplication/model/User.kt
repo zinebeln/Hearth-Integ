@@ -13,6 +13,7 @@ data class User(
 //    @PrimaryKey val username: String,
     val username: String,
 //    @ColumnInfo(name = "Id") val id: String = UUID.randomUUID().toString(),
-    val password: String,
+    var password: String,
 //    val isLoggedIn: Boolean = false
+    val isLoggedIn: Boolean = false // Champ pour indiquer si l'utilisateur est connecté
 )

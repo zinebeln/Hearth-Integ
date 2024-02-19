@@ -1,9 +1,9 @@
 package com.example.myapplication.model
 
-import androidx.compose.material3.Card
+
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.myapplication.Card
+import com.example.myapplication.model.Card
 import com.example.myapplication.repository.HearthstoneRepository
 
 class CardViewModel(private val repository: HearthstoneRepository) : ViewModel() {

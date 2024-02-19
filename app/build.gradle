@@ -11,9 +11,31 @@ plugins {
 
 }
 
+
 android {
     namespace 'com.example.myapplication'
     compileSdk 34
+
+    flavorDimensions += "env"
+    productFlavors {
+
+        dev {
+            dimension "env"
+            //applicationIdSuffix ".demo"
+            versionNameSuffix ".demo"
+            buildConfigField("String", "popo", "\"API-keyvalue\"")
+
+        }
+
+        tintin {
+            dimension "env"
+            //applicationIdSuffix ".demo"
+            versionNameSuffix ".demo"
+
+        }
+
+
+    }
 
 
     defaultConfig {
@@ -29,6 +51,7 @@ android {
     buildFeatures {
         dataBinding true
         viewBinding true
+        buildConfig true
     }
 
     buildTypes {

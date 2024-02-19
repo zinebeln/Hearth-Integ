@@ -27,6 +27,10 @@
         android:id="@+id/action_userFragment_to_signUpFragment"
         app:destination="@id/signUpFragment" />
 
+    <action
+        android:id="@+id/action_signUpFragment_to_userFragment"
+        app:destination="@id/userFragment" />
+
     <fragment
         android:id="@+id/cardFragment"
         android:name="com.example.myapplication.ui.CardFragment"
@@ -76,6 +80,12 @@
     </fragment>
 
     <fragment
+        android:id="@+id/passwordFragment"
+        android:name="com.example.myapplication.ui.UserFragment"
+        android:label="Modif Password"
+        tools:layout="@layout/fragment_change_password" />
+
+    <fragment
         android:id="@+id/section3Fragment"
         android:name="com.example.myapplication.ui.ProfilFragment"
         android:label="Profil"
@@ -92,6 +102,9 @@
         <action
             android:id="@+id/action_profilFragment_to_userFragment"
             app:destination="@id/userFragment" />
+        <action
+            android:id="@+id/action_profilFragment_to_passwordFragment"
+            app:destination="@id/passwordFragment" />
 
     </fragment>
 
@@ -107,6 +120,7 @@
     <action
         android:id="@+id/action_cardFragment_to_cardFragment"
         app:destination="@id/cardFragment" />
+
 
     <action
         android:id="@+id/action_cardFragment_to_section2Fragment"

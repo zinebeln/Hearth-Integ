@@ -16,6 +16,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.example.myapplication.R
 import com.example.myapplication.domain.repository.UserRepository
@@ -29,6 +30,7 @@ import kotlinx.coroutines.launch
 
 class UserFragment : Fragment() {
 
+    private lateinit var userRepository: UserRepository
     private lateinit var etUsername: EditText
     private lateinit var etPassword: EditText
     private lateinit var btnLogin: Button
@@ -49,11 +51,17 @@ class UserFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+//        userRepository = UserRepository()
+
+
         authViewModel.userLoggedIn.observe(viewLifecycleOwner, Observer { userLoggedIn ->
 
             Log.d("UserFragment", "User logged in: $userLoggedIn")
             if (userLoggedIn) {
+
                 Toast.makeText(requireContext(), "Utilisateur connecté avec succès", Toast.LENGTH_SHORT).show()
+
+
             } else {
                 Toast.makeText(requireContext(), "Échec de la connexion", Toast.LENGTH_SHORT).show()
             }
@@ -74,6 +82,8 @@ class UserFragment : Fragment() {
         etPassword = view.findViewById(R.id.etPassword)
         btnLogin = view.findViewById(R.id.btnLogin)
         btnCreateAccount = view.findViewById(R.id.btnCreateAccount)
+        //userRepository = UserRepository()
+        userRepository = UserRepository()
 
         btnLogin.setOnClickListener {
             val username = etUsername.text.toString()
@@ -88,8 +98,27 @@ class UserFragment : Fragment() {
 //                    lifecycleScope.launch {
 //                        authManager.setLoggedIn(true)
 //                    }
+
+                    // Mettre à jour le statut isLoggedIn dans la base de données
+
+                    val newUserr= User(username = username, password = password, isLoggedIn = true)
                     val newUser = User(username = username, password = password)
-                    auth.setUser(newUser)
+                    auth.setUser(newUserr)
+
+                    lifecycleScope.launch {
+                        // Mettre à jour le statut isLoggedIn dans la base de données
+                        userRepository.updateUserLoggedInStatus(newUserr.userId, true)
+                        Log.d("UserFragment", "Mise à jour du statut isLoggedIn effectuée pour l'utilisateur : $newUserr")
+                    }
+
+
+//                    // authViewModel.updateUserLoggedInStatus(true)
+//                    lifecycleScope.launch {
+//                        userRepository.updateUserLoggedInStatus(newUserr)
+//                        Log.d("UserFragment", "a" + newUserr)
+//
+//                    }
+//                    userRepository.updateUserLoggedInStatus(newUserr)
 //                    lifecycleScope.launch {
 //                        auth.setUser(newUser)
 //                    }

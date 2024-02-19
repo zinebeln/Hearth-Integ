@@ -14,10 +14,12 @@ import kotlinx.coroutines.launch
 class UserViewModel (private val userRepository: UserRepository) : ViewModel()  {
 
     private val _userLoggedIn = MutableLiveData<Boolean>()
-    val userLoggedIn: LiveData<Boolean> = _userLoggedIn
+    val userLoggedIn: LiveData<Boolean> get() = _userLoggedIn
 
 
-
+    fun updateUserLoggedInStatus(isLoggedIn: Boolean) {
+        _userLoggedIn.value = isLoggedIn
+    }
 
 //    val userDao = AppDatabase.getDatabase().userDao()
 //    private val userRepositoryy = UserRepository(userDao)
