@@ -62,6 +62,34 @@ class CardViewModel(private val repository: CardsRepository) : ViewModel()  {
             }
     }
 
+    suspend fun fetchCards() {
+        _isLoading.value = true
+        try {
+            val cards = repository.getCardsFromApi()
+            // Mise à jour de la base de données locale avec les nouvelles données
+            cardDao.insertCards(cards)
+            _cardsList.postValue(cards)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            _isLoading.value = false
+        }
+    }
+
+    fun loadCardsFromDatabase() {
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                val cards = cardDao.getCardsData()
+                _cardsList.postValue(cards)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
 
 
   // }

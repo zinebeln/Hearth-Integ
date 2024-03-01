@@ -12,6 +12,8 @@ interface DaoCards {
 
     @Query("SELECT * FROM Card LIMIT 10000")
     fun getCardsData2():List<Card>
+    @Query("SELECT * FROM Card LIMIT 10000")
+    fun getCardsData():List<Card>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCards(cards : List<Card>)

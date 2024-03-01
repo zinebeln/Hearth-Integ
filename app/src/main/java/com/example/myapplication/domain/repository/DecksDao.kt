@@ -26,7 +26,14 @@ interface DecksDao {
 
     //changement ici
     @Query("SELECT * FROM decks_cards WHERE userId = :userId")
-     fun getDeckCardsForUser(userId: Long): LiveData<List<DecksCard>>
+    fun getDeckCardsForUser(userId: Long): LiveData<List<DecksCard>>
+
+    @Query("SELECT * FROM decks_cards WHERE userId = :userId")
+    suspend fun getDecksCardsForUser(userId: Long): List<DecksCard>
+
+    @Query("SELECT * FROM decks_cards WHERE isFavorite = 1")
+    suspend fun getFavoriteCards(): List<DecksCard>
+
 
 
 }

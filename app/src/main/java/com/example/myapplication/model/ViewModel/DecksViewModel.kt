@@ -1,6 +1,8 @@
 package com.example.myapplication.model.ViewModel
 
 import android.util.Log
+import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -16,10 +18,6 @@ import com.example.myapplication.ui.AuthManager
 import kotlinx.coroutines.launch
 
 class DecksViewModel (private val decksRepository: DecksCardRepository, private val userRepository: UserRepository ) : ViewModel() {
-
-//    class DecksViewModel (private val decksRepository: DecksCardRepository, private val userRepository: UserRepository,  private val authManager: AuthManager) : ViewModel() {
-//
-
     @Suppress("unused")
     constructor() : this(DecksCardRepository(), UserRepository() ) {
     }
@@ -39,10 +37,38 @@ class DecksViewModel (private val decksRepository: DecksCardRepository, private 
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> get() = _errorMessage
 
+    private val _favoriteCards = MutableLiveData<List<DecksCard>>()
+    val favoriteCards: LiveData<List<DecksCard>> = _favoriteCards
+
     private lateinit var auth: AuthManager
+
+    fun init(auth: AuthManager) {
+        this.auth = auth // Initialisation de la propriété auth
+    }
 
     private val userIdObserver = Observer<Long> { userId ->
       
+    }
+
+    // Méthode pour récupérer les cartes favorites d'un utilisateur
+    fun getFavoriteCardsForUser(userId: Long) {
+        viewModelScope.launch {
+            val favoriteCardsForUser = decksRepository.decksCardFav(userId)
+            _favoriteCards.postValue(favoriteCardsForUser)
+        }
+    }
+
+    fun getFavoriteCardsForUser(username: String) {
+        viewModelScope.launch {
+            val userId = userRepository.getUserId(username)
+            if (userId != null) {
+                val favoriteCardsForUser = decksRepository.decksCardFav(userId)
+                _favoriteCards.postValue(favoriteCardsForUser)
+            } else {
+                // Gérer le cas où l'utilisateur n'existe pas
+                Log.d("erreur fav", "utilisateur n'existe pas")
+            }
+        }
     }
 
 
@@ -50,6 +76,11 @@ class DecksViewModel (private val decksRepository: DecksCardRepository, private 
         viewModelScope.launch {
             decksRepository.deleteDeckCard(decksCard)
             _cardDeletedEvent.value = Unit
+        }
+    }
+    fun deleteFavoriteCard(decksCard: DecksCard) {
+        viewModelScope.launch {
+            decksRepository.deleteDeckCard(decksCard)
         }
     }
 
@@ -73,43 +104,36 @@ class DecksViewModel (private val decksRepository: DecksCardRepository, private 
             _d.postValue(updatedDeckCards.value)
         }
     }
+
+    fun refreshDeckCards3() {
+        viewModelScope.launch {
+            // Récupérer la liste mise à jour des cartes favorites après la suppression
+            val updatedFavoriteCards = decksRepository.getFavoriteCards()
+            _favoriteCards.value = updatedFavoriteCards
+        }
+    }
     suspend fun toggleFavoriteStatus(card: Card) {
-        //val userId = userRepository.getLoggedInUserId() ?: return
         Log.d("togglefavorite", "click $card")
-        // Vérifiez si la carte est déjà en favori
         val isAlreadyFavorite = decksRepository.getIdDeckCard(card.cardId) != null
         Log.d("isAlreadyFavorite", "click $isAlreadyFavorite")
         card.isFavorite = !card.isFavorite
-
-        // Mettez à jour la LiveData indiquant si la carte est en favori ou non
         _isCardFavorite.value = card.isFavorite
 
         if (card.isFavorite) {
             if(!isAlreadyFavorite) {
                 // Ajouter la carte aux favoris
                 Log.d("insert fav", "click $card")
-//                decksRepository.insertDecksCard(DecksCard(cardId = card.cardId, userId = userId, card = card))
-               // decksRepository.insertDecksCard(DecksCard(cardId = card.cardId, card = card))
             }else{
                 _errorMessage.value = R.string.card_already_in_favorites.toString()
             }
         } else {
-            // Supprimer la carte des favoris
-//            decksRepository.deleteDeckCard(DecksCard(cardId = card.cardId, card = card))
             Log.d("dekete fav", "click $card")
-         //  decksRepository.insertDecksCard(DecksCard(cardId = card.cardId, card = card))
-           //decksRepository.deleteDeckCard(DecksCard(cardId = card.cardId, card = card))
-
         }
     }
 
 
     suspend fun toggleFavoriteStatus2(card: Card, userId : Long?) {
-        //val userId = userRepository.getLoggedInUserId() ?: return
         Log.d("togglefavorite", "click $card")
-        // Vérifiez si la carte est déjà en favori
-
-
         val isAlreadyFavorite = decksRepository.getIdDeckCard(card.cardId) != null
         Log.d("isAlreadyFavorite", "click $isAlreadyFavorite")
         card.isFavorite = !card.isFavorite
@@ -117,50 +141,48 @@ class DecksViewModel (private val decksRepository: DecksCardRepository, private 
         // Mettez à jour la LiveData indiquant si la carte est en favori ou non
         _isCardFavorite.value = card.isFavorite
 
-       // userRepository.getUserId()
-
-
-//        val nullableLong: Long? = auth.user.value?.userId
-//        val nonNullableLong: Long = nullableLong ?: 0L // Utilisez une valeur par défaut, par exemple 0L
         if (card.isFavorite) {
             if(!isAlreadyFavorite) {
                 // Ajouter la carte aux favoris
                 Log.d("insert fav", "click $card")
-//                decksRepository.insertDecksCard(DecksCard(cardId = card.cardId, userId = userId, card = card))
                 decksRepository.insertDecksCard2(DecksCard(cardsId = card.cardId, card = card, userId = userId ))
-//                decksRepository.insertDecksCard2(DecksCard(cardsId = card.cardId, card = card, userId = nonNullableLong ))
             }else{
                 _errorMessage.value = R.string.card_already_in_favorites.toString()
             }
         } else {
-            // Supprimer la carte des favoris
-//            decksRepository.deleteDeckCard(DecksCard(cardId = card.cardId, card = card))
             Log.d("dekete fav", "click $card")
-//            decksRepository.insertDecksCard2(DecksCard(cardsId = card.cardId, card = card, userId = nonNullableLong))
-            //decksRepository.deleteDeckCard(DecksCard(cardId = card.cardId, card = card))
             Log.d("user id $userId ", "test");
             decksRepository.insertDecksCard2(DecksCard(cardsId = card.cardId, card = card, userId = userId ))
 
         }
     }
 
+    suspend fun toggleFavoriteStatus3(card: Card, userId: Long?) {
+        Log.d("togglefavorite", "click $card")
+        val isAlreadyFavorite = decksRepository.decksCardFav(userId ?: 0)?.any { it.cardsId == card.cardId } ?: false
+        Log.d("isAlreadyFavorite", "click $isAlreadyFavorite")
+        card.isFavorite = !isAlreadyFavorite
+
+        // Mettez à jour la LiveData indiquant si la carte est en favori ou non
+        _isCardFavorite.value = card.isFavorite
+
+        if (card.isFavorite) {
+            if (!isAlreadyFavorite) {
+                // Ajouter la carte aux favoris
+                Log.d("insert fav", "click $card")
+                decksRepository.addToFavorites(userId ?: 0, card.cardId, card)
+
+            } else {
+                _errorMessage.value = R.string.card_already_in_favorites.toString()
+            }
+        } else {
+            Log.d("delete fav", "click $card")
+            // Supprimer la carte des favoris
+//            val deckCard = decksRepository.getDecksCardById(card.cardId)
+//            deckCard?.let { decksRepository.deleteDeckCard(it) }
+        }
+    }
 
 
-
-//    suspend fun addDeckCardToUser(deckId: Long, cardId: String, card: Card) {
-//        val userId = authManager.getLoggedInUserId() ?: return
-//        val deckCard = DecksCard(deckId, cardId, userId, card)
-//        decksRepository.insertDecksCard(deckCard)
-//        refreshDeckCardsForLoggedInUser()
-//    }
-
-//    suspend fun getDeckCardsForLoggedInUser(): List<DecksCard> {
-//        val userId = authManager.getLoggedInUserId() ?: return emptyList()
-//        return decksRepository.getDeckCardsForUser(userId)
-//    }
-//    suspend fun refreshDeckCardsForLoggedInUser() {
-//        val userDecksCards = getDeckCardsForLoggedInUser()
-//        _d.postValue(userDecksCards)
-//    }
 
 }

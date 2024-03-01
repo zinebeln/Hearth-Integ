@@ -44,5 +44,11 @@ class CardsRepository() {
         }
     }
 
+    suspend fun getCardsFromApi(): List<Card> {
+        val response = CardSource.cardSource.getCardsData2()
+        val cards = response.body() ?: Cards()
+        return cards.Basic
+    }
+
     }
 

@@ -28,6 +28,13 @@ class UserRepository() {
         userDao.insert(user)
     }
 
+    suspend fun getUserId(username : String): Long? {
+       return userDao.getUserId(username)
+    }
+    suspend fun getUserIdd(username : String): Long {
+        return userDao.getUserIdd(username)
+    }
+
     suspend fun isUsernameAvailable(username: String): Boolean {
         // Vérifiez si le nom d'utilisateur existe déjà dans la base de données
         val existingUser = userDao.getUserByUsername(username)

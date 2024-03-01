@@ -1,10 +1,14 @@
 package com.example.myapplication.ui
 
 
+import android.content.Context
+import android.content.IntentFilter
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -27,7 +31,9 @@ class CardFragment : Fragment() {
     private val cardViewModel: CardViewModel by viewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var progressBar: ProgressBar
-
+    private lateinit var adapter: CardAdaptater
+    private lateinit var networkChangeReceiver: NetworkChangeReceiver
+    private lateinit var intentFilter: IntentFilter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,20 +43,13 @@ class CardFragment : Fragment() {
         Log.d("CardFragment", "onCreateView called")
         val rootView = inflater.inflate(R.layout.fragment_card, container, false)
         val recyclerView = rootView.findViewById<RecyclerView>(R.id.cardRecyclerView)
+
         progressBar = rootView.findViewById(R.id.progressBar)
         //val prog = rootView.findViewById<ProgressBar>(R.id.progressBar)
         cardViewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
             progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         })
-
-//        val adapter = CardAdaptater(object : CardAdaptater.OnItemClickListener {
-//            override fun onItemClick(card: Card) {
-//                sharedViewModel.selectCard(card)
-//                findNavController().navigate(R.id.action_cardFragment_to_cardDetailsFragment)
-//            }
-//        })
-
-        val adapter = CardAdaptater()
+        adapter = CardAdaptater()
         recyclerView.adapter = adapter
         recyclerView.apply {
             layoutManager = GridLayoutManager(requireContext(), 2) // 2 colonnes, ajustez selon vos besoins
@@ -61,9 +60,23 @@ class CardFragment : Fragment() {
             adapter.submitList(cards)
         })
 
-        lifecycleScope.launch {
-            cardViewModel.fetchCards2()
+        val offlineTextView = rootView.findViewById<TextView>(R.id.offlineTextView)
+
+        if (isNetworkAvailable()) {
+            lifecycleScope.launch {
+                cardViewModel.fetchCards()
+            }
+        } else {
+            offlineTextView.visibility = View.VISIBLE
+            cardViewModel.loadCardsFromDatabase()
         }
+        networkChangeReceiver = NetworkChangeReceiver()
+        intentFilter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        requireContext().registerReceiver(networkChangeReceiver, intentFilter)
+
+//        lifecycleScope.launch {
+//            cardViewModel.fetchCards2()
+//        }
 
         adapter.setOnItemClickListener(object : CardAdaptater.OnItemClickListener {
             override fun onItemClick(card: Card) {
@@ -73,19 +86,20 @@ class CardFragment : Fragment() {
             }
         })
 
-//    adapter.setOnItemClickListener(object : CardAdaptater.OnItemClickListener {
-//        override fun onItemClick(card: Card) {
-//            Log.d("CardFragment", "onClick card : $card")
-//            sharedViewModel?.selectCard(card)
-//            findNavController().navigate(R.id.action_cardFragment_to_cardDetailsFragment)
-//        }
-//    })
+
+
 
         val bottomNavigationView = rootView.findViewById<BottomNavigationView>(R.id.bottomNavigation)
         val navController = findNavController()
         bottomNavigationView.setupWithNavController(navController)
 
         return rootView
+    }
+
+    private fun isNetworkAvailable(): Boolean {
+        val connectivityManager = requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo = connectivityManager.activeNetworkInfo
+        return networkInfo != null && networkInfo.isConnected
     }
 
     companion object {

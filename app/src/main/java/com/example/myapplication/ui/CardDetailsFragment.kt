@@ -1,5 +1,6 @@
 package com.example.myapplication.ui
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,16 +10,21 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
+
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.example.myapplication.R
+import com.example.myapplication.domain.repository.UserRepository
 import com.example.myapplication.model.ViewModel.DecksViewModel
 import com.example.myapplication.model.ViewModel.SharedViewModel
 import kotlinx.coroutines.launch
@@ -34,6 +40,7 @@ class CardDetailsFragment : Fragment()  {
 //    private lateinit var btn : ImageButton
     private lateinit var btnFav : Button
     private lateinit var auth: AuthManager
+    private lateinit var userRepo : UserRepository
 
     private val imageNamess =
         listOf("imagun", "imagedeux", "imagetrois", "imagecinq", "imagesix")
@@ -51,6 +58,7 @@ class CardDetailsFragment : Fragment()  {
         imageViewCard = view.findViewById(R.id.imageViewCardDetails)
 //        btn = view.findViewById(R.id.imageButtonStar)
         btnFav = view.findViewById(R.id.btnAddToFavorites)
+        userRepo = UserRepository()
 
 
         return view
@@ -104,13 +112,30 @@ class CardDetailsFragment : Fragment()  {
 //                        }
 //                    }
 
-                    btnFav.setOnClickListener {
-                        lifecycleScope.launch {
-                            Log.d("on click favorite", "click $selectedCard")
-                            decksViewModel.toggleFavoriteStatus2(selectedCard, auth.user.value?.userId)
-                            //decksViewModel.toggleFavoriteStatus(selectedCard)
+                    val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
+                    val username = sharedPref.getString("username", "")?: ""
+                    lifecycleScope.launch {
+                        val userId = userRepo.getUserId(username)
+                        btnFav.setOnClickListener {
+                            lifecycleScope.launch {
+                                Log.d("on click favorite", "click $selectedCard")
+                                Toast.makeText(requireContext(), "Carte ajoutée aux favoris ", Toast.LENGTH_SHORT).show()
+                                decksViewModel.toggleFavoriteStatus3(selectedCard, userId)
+
+                                //decksViewModel.toggleFavoriteStatus2(selectedCard, auth.user.value?.userId)
+                                //decksViewModel.toggleFavoriteStatus(selectedCard)
+                            }
                         }
                     }
+
+//                    btnFav.setOnClickListener {
+//                        lifecycleScope.launch {
+//                            Log.d("on click favorite", "click $selectedCard")
+//                            decksViewModel.toggleFavoriteStatus3(selectedCard, auth.user.value?.userId)
+//                            //decksViewModel.toggleFavoriteStatus2(selectedCard, auth.user.value?.userId)
+//                            //decksViewModel.toggleFavoriteStatus(selectedCard)
+//                        }
+//                    }
 
 //                    decksViewModel.isCardFavorite.observe(viewLifecycleOwner, Observer { isFavorite ->
 //                        updateFavoriteButtonState(isFavorite)

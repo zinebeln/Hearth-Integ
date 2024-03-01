@@ -127,10 +127,21 @@ class UserFragment : Fragment() {
 
                     Log.d("UserFragment", "Avant la navigation vers CardFragment")
 
+
+
+
+
                     // Stocker l'identifiant dans les préférences partagées
                     val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
                     with (sharedPref.edit()) {
+
                         putString("username", username)
+                        putString("password", password)
+                        lifecycleScope.launch {
+                            val userId = userRepository.getUserIdd(username)
+                            Log.d("shared","test userid "+ userId)
+                            putLong("userId", userId)
+                        }
                         apply()
                     }
 

@@ -28,6 +28,12 @@ interface DaoUser {
     @Query("SELECT * FROM users WHERE username = :username")
     suspend fun getUserByUsernameT(username: String): User
 
+    @Query("SELECT userId FROM users WHERE username = :username")
+    suspend fun getUserId(username: String) : Long?
+    @Query("SELECT userId FROM users WHERE username = :username")
+    suspend fun getUserIdd(username: String) : Long
+
+
    @Query("SELECT * FROM users WHERE username = :username LIMIT 1")
    suspend fun getUserByUsername(username: String): User?
 
@@ -39,6 +45,9 @@ interface DaoUser {
 
     @Query("SELECT * FROM users WHERE isLoggedIn = 1 LIMIT 1")
     fun getCurrentUser(): User?
+
+    @Query("UPDATE users SET isLoggedIn = :isLoggedIn WHERE userId = :userId")
+    fun updateUserLoggedInStatus(userId: Int, isLoggedIn: Boolean)
 
 
 

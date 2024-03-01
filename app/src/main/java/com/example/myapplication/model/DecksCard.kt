@@ -21,6 +21,7 @@ import androidx.room.PrimaryKey
 //])
 
 @Entity(tableName = "decks_cards", foreignKeys = [ForeignKey(entity = User::class, parentColumns = ["userId"], childColumns = ["userId"], onDelete = CASCADE)])
+
 data class DecksCard(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     @ColumnInfo(name = "userId") val userId: Long?,

@@ -81,7 +81,7 @@
 
     <fragment
         android:id="@+id/passwordFragment"
-        android:name="com.example.myapplication.ui.UserFragment"
+        android:name="com.example.myapplication.ui.ChangePasswordFragment"
         android:label="Modif Password"
         tools:layout="@layout/fragment_change_password" />
 

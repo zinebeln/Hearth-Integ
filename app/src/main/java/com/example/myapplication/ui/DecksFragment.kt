@@ -1,6 +1,7 @@
 package com.example.myapplication.ui
 
 import android.app.AlertDialog
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -28,7 +29,10 @@ import kotlinx.coroutines.launch
 
 class DecksFragment : Fragment()  {
    // private val deckViewModel: DecksViewModel by activityViewModels()
+   private var previousFavoriteCardsSize = 0
+    private var previousFavoriteCards: List<DecksCard> = emptyList()
     private val deckViewModel: DecksViewModel by viewModels()
+    private lateinit var decksAdapter: DecksAdapter
 //    private val decksAdapter = DecksAdapter()
 
 
@@ -41,68 +45,46 @@ class DecksFragment : Fragment()  {
         val view = inflater.inflate(R.layout.fragment_decks, container, false)
         val recyclerView = view.findViewById<RecyclerView>(R.id.decksRecyclerView)
         val bottomNavigationView = view.findViewById<BottomNavigationView>(R.id.bottomNavigationDecks)
-       // decksAdapter = DecksAdapter(emptyList())
-       // recyclerView.adapter = decksAdapter
-        val decksAdapter = DecksAdapter(object : DecksAdapter.OnItemClickListener {
+
+        decksAdapter = DecksAdapter(object : DecksAdapter.OnItemClickListener {
             override fun onItemClicked(decksCard: DecksCard) {
                 showConfirmationDialog(decksCard)
             }
         })
+
+        val auth = AuthManager(requireContext()) // Remplacez par votre propre initialisation d'auth
+        deckViewModel.init(auth)
         recyclerView.adapter = decksAdapter
 
-        // Ajoutez cette ligne pour définir un LinearLayoutManager
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.apply {
             layoutManager = GridLayoutManager(requireContext(), 2) // 2 colonnes, ajustez selon vos besoins
         }
 
+        val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
+        val username = sharedPref.getString("username", "")?: ""
+        deckViewModel.getFavoriteCardsForUser(username)
 
+        deckViewModel.favoriteCards.observe(viewLifecycleOwner, Observer { favoriteCards ->
+            decksAdapter.submitList(favoriteCards)
 
-
-        deckViewModel.decksCards.observe(viewLifecycleOwner, Observer { decksCards ->
-            decksAdapter.submitList(decksCards)
+            // Vérifier si une nouvelle carte a été ajoutée aux favoris
+            if (favoriteCards.size > previousFavoriteCardsSize) {
+                val newFavoriteCard = favoriteCards.last()
+              //  Toast.makeText(requireContext(), "Nouvelle carte ajoutée aux favoris: ${newFavoriteCard.card.name}", Toast.LENGTH_SHORT).show()
+            }
+            // Vérifier si une carte a été supprimée des favoris
+            else if (favoriteCards.size < previousFavoriteCardsSize) {
+                val removedFavoriteCard = previousFavoriteCards.last { it !in favoriteCards }
+                Toast.makeText(requireContext(), "Carte supprimée des favoris: ${removedFavoriteCard.card.name}", Toast.LENGTH_SHORT).show()
+            }
+            previousFavoriteCardsSize = favoriteCards.size
+            previousFavoriteCards = favoriteCards.toList()
         })
 
         deckViewModel.cardDeletedEvent.observe(viewLifecycleOwner, Observer {
-            // Mettez à jour la liste des cartes ou effectuez d'autres actions nécessaires
-           // deckViewModel.refreshDeckCards() // Assurez-vous d'avoir une fonction pour rafraîchir vos données
-            deckViewModel.refreshDeckCards2()
+            deckViewModel.refreshDeckCards3()
         })
-
-//        lifecycleScope.launch {
-//            deckViewModel.refreshDeckCardsForLoggedInUser()
-//        }
-
-//        deckViewModel.decksCards.observe(viewLifecycleOwner, Observer { decksCards ->
-//            // Mise à jour de l'adaptateur avec la nouvelle liste de decksCards
-//            decksAdapter.submitList(decksCards)
-//        })
-
-
-
-
-
-
-//        lifecycleScope.launch {
-//            deckViewModel.getDeckCardsForLoggedInUser().observe(viewLifecycleOwner, Observer { deckCards ->
-//                // Faites quelque chose avec les DeckCards de l'utilisateur connecté
-//            })
-//        }
-
-
-
-
-
-        // ...
-//        deckViewModel.decksCards.observe(viewLifecycleOwner, Observer { decksCards ->
-//
-//            decksAdapter.submitList(decksCards)
-//        })
-
-//        deckViewModel.cardDeletedEvent.observe(viewLifecycleOwner, Observer {
-//            // Mettez à jour la liste des cartes ou effectuez d'autres actions nécessaires
-//            deckViewModel.refreshDeckCards() // Assurez-vous d'avoir une fonction pour rafraîchir vos données
-//        })
 
         deckViewModel.errorMessage.observe(viewLifecycleOwner, Observer { errorMessageResId ->
             // Utilisez la ressource de chaîne pour afficher le message d'erreur
@@ -125,7 +107,7 @@ class DecksFragment : Fragment()  {
             // Supprimez la carte de vos favoris ici en appelant votre méthode de suppression.
             deckViewModel.delete(decksCard)
             Toast.makeText(requireContext(), "Carte supprimée des favoris", Toast.LENGTH_SHORT).show()
-        }
+            }
         builder.setNegativeButton("Non") { dialog, _ ->
             dialog.dismiss() }
 
@@ -133,10 +115,6 @@ class DecksFragment : Fragment()  {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
-
-        // Utilisez le ViewModel pour observer les changements dans la liste des favoris
 
     }
 
