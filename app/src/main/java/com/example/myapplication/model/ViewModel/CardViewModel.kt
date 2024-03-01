@@ -26,6 +26,13 @@ class CardViewModel(private val repository: CardsRepository) : ViewModel()  {
     private val _searchResults = MutableLiveData<List<Card>>()
     val searchResults: LiveData<List<Card>> = _searchResults
 
+    private val _filteredType= MutableLiveData<List<Card>>()
+    val filteredType: LiveData<List<Card>> = _filteredType
+    private val _filteredCost = MutableLiveData<List<Card>>()
+    val filteredCost: LiveData<List<Card>> = _filteredCost
+    private val _filteredAtt= MutableLiveData<List<Card>>()
+    val filteredAtt: LiveData<List<Card>> = _filteredAtt
+
     fun searchCards(query: String) {
         viewModelScope.launch {
             val results = repository.searchCards(query)
@@ -97,6 +104,28 @@ class CardViewModel(private val repository: CardsRepository) : ViewModel()  {
             } finally {
                 _isLoading.value = false
             }
+        }
+    }
+
+
+    fun getCardsSortedByType() {
+        viewModelScope.launch {
+            val type = repository.getCardsSortedByType()
+            _filteredType.postValue(type)
+        }
+    }
+
+    fun getCardsSortedByAttack(){
+        viewModelScope.launch {
+            val type = repository.getCardsSortedByAttack()
+            _filteredCost.postValue(type)
+        }
+    }
+
+    fun getCardsSortedByName(){
+        viewModelScope.launch {
+            val type = repository.getCardsSortedByName()
+            _filteredAtt.postValue(type)
         }
     }
 

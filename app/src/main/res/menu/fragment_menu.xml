@@ -4,4 +4,15 @@
         android:id="@+id/action_back"
         app:showAsAction="ifRoom"
         android:title="Retour" />
+
+    <item
+        android:id="@+id/action_sort_by_type"
+        android:title="Sort by Type"/>
+    <item
+        android:id="@+id/action_sort_by_cost"
+        android:title="Sort by Cost"/>
+    <item
+        android:id="@+id/action_sort_by_name"
+        android:title="Sort by Name"/>
+
 </menu>

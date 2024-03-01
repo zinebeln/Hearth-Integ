@@ -25,6 +25,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.myapplication.databinding.FragmentCardBinding
 import com.example.myapplication.model.ViewModel.SharedViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -36,16 +37,46 @@ class CardFragment : Fragment() {
     private lateinit var adapter: CardAdaptater
     private lateinit var networkChangeReceiver: NetworkChangeReceiver
     private lateinit var intentFilter: IntentFilter
+    private lateinit var binding: FragmentCardBinding // Déclaration de la variable de liaison
+
+//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+//        inflater.inflate(R.menu.fragment_menu, menu)
+//    }
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        return when (item.itemId) {
+//            R.id.action_sort_by_type -> {
+//                cardViewModel.getCardsSortedByType()
+//                true
+//            }
+//            R.id.action_sort_by_cost -> {
+//                cardViewModel.getCardsSortedByAttack()
+//                true
+//            }
+//            R.id.action_sort_by_name -> {
+//                cardViewModel.getCardsSortedByName()
+//                true
+//            }
+//            else -> super.onOptionsItemSelected(item)
+//        }
+//    }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
+        binding = FragmentCardBinding.inflate(inflater, container, false) // Initialisation de la liaison
+
         Log.d("CardFragment", "onCreateView called")
         val rootView = inflater.inflate(R.layout.fragment_card, container, false)
         val recyclerView = rootView.findViewById<RecyclerView>(R.id.cardRecyclerView)
         val editTextSearch = rootView.findViewById<EditText>(R.id.searchEditText)
+
+
 
         progressBar = rootView.findViewById(R.id.progressBar)
         //val prog = rootView.findViewById<ProgressBar>(R.id.progressBar)
@@ -109,6 +140,74 @@ class CardFragment : Fragment() {
 
         return rootView
     }
+
+    // Mettre à jour le RecyclerView avec les nouvelles données
+    private fun updateCardList(cards: List<Card>) {
+        adapter.submitList(cards)
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+//        // Observer les résultats des différentes options de tri et mettre à jour le RecyclerView
+//        cardViewModel.getCardsSortedByType().observe(viewLifecycleOwner, Observer { cards ->
+//            updateCardList(cards)
+//        })
+//
+//        cardViewModel.getCardsSortedByAttack().observe(viewLifecycleOwner, Observer { cards ->
+//            updateCardList(cards)
+//        })
+//
+//        cardViewModel.getCardsSortedByName().observe(viewLifecycleOwner, Observer { cards ->
+//            updateCardList(cards)
+//        })
+
+        cardViewModel.filteredType.observe(viewLifecycleOwner, Observer { results ->
+            adapter.submitList(results)
+        })
+        cardViewModel.filteredAtt.observe(viewLifecycleOwner, Observer { results ->
+            adapter.submitList(results)
+        })
+        cardViewModel.filteredCost.observe(viewLifecycleOwner, Observer { results ->
+            adapter.submitList(results)
+        })
+
+        // Activer le menu
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.fragment_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_sort_by_type -> {
+                cardViewModel.getCardsSortedByType() // L'observer dans onViewCreated mettra à jour le RecyclerView
+                true
+            }
+            R.id.action_sort_by_cost -> {
+                cardViewModel.getCardsSortedByAttack() // L'observer dans onViewCreated mettra à jour le RecyclerView
+                true
+            }
+            R.id.action_sort_by_name -> {
+                cardViewModel.getCardsSortedByName() // L'observer dans onViewCreated mettra à jour le RecyclerView
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+//    private fun setupMenu() {
+//        val menu = binding.toolbar.menu
+//        menu.findItem(R.id.action_sort_by_type)?.setOnMenuItemClickListener {
+//            cardViewModel.getCardsSortedByType().observe(viewLifecycleOwner, Observer { cards ->
+//                adapter.submitList(cards)
+//            })
+//            true
+//        }
+//
+//        // Autres items de menu
+//    }
 
     private fun isNetworkAvailable(): Boolean {
         val connectivityManager = requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

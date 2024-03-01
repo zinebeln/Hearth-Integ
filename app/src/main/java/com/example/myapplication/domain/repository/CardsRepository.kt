@@ -2,6 +2,7 @@ package com.example.myapplication.domain.repository
 
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.lifecycle.LiveData
 import com.example.myapplication.domain.CardDataService
 import com.example.myapplication.dataSource.CardSource
 import com.example.myapplication.model.Card
@@ -18,16 +19,6 @@ class CardsRepository() {
 
     @SuppressLint("SuspiciousIndentation")
     suspend fun getCards(): Flow<Cards> = flow {
-
-//      val toto = CardSource.cardSource.getCardsData2()
-//        //val toto = CardApiService.getCardsData2()
-//        if (toto.isSuccessful) {
-//            val cards = toto.body() ?: Cards()
-//            emit(cards)
-//        } else {
-//            emit(Cards()) // Ou vous pouvez émettre un état d'erreur si nécessaire
-//        }
-
         try {
             val response = CardSource.cardSource.getCardsData2()
             if (response.isSuccessful) {
@@ -35,14 +26,14 @@ class CardsRepository() {
                 cardDao.insertCards(cards.Basic)
                 emit(cards)
             } else {
-                emit(Cards()) // Ou vous pouvez émettre un état d'erreur si nécessaire
+                emit(Cards())
             }
             Log.d("API_INFO", "All cards in fetchCards card repository: $response")
         } catch (e: Exception) {
-            // Gérer les erreurs ici
             e.printStackTrace()
         }
     }
+
 
     suspend fun searchCards(query: String): List<Card> {
         return cardDao.searchCards(query)
@@ -58,5 +49,18 @@ class CardsRepository() {
         return cards.Basic
     }
 
+    suspend fun getCardsSortedByType(): List<Card> {
+        return cardDao.getCardsSortedByType()
     }
+
+    suspend fun getCardsSortedByAttack(): List<Card> {
+        return cardDao.getCardsSortedByAttack()
+    }
+
+    suspend fun getCardsSortedByName(): List<Card> {
+        return cardDao.getCardsSortedByName()
+    }
+
+
+}
 
