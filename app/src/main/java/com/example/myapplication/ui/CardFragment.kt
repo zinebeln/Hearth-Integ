@@ -7,8 +7,10 @@ import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -43,6 +45,7 @@ class CardFragment : Fragment() {
         Log.d("CardFragment", "onCreateView called")
         val rootView = inflater.inflate(R.layout.fragment_card, container, false)
         val recyclerView = rootView.findViewById<RecyclerView>(R.id.cardRecyclerView)
+        val editTextSearch = rootView.findViewById<EditText>(R.id.searchEditText)
 
         progressBar = rootView.findViewById(R.id.progressBar)
         //val prog = rootView.findViewById<ProgressBar>(R.id.progressBar)
@@ -55,19 +58,30 @@ class CardFragment : Fragment() {
             layoutManager = GridLayoutManager(requireContext(), 2) // 2 colonnes, ajustez selon vos besoins
         }
 
+        // Écouteur de texte sur l'EditText pour détecter les modifications de texte en temps réel
+        editTextSearch.addTextChangedListener { text ->
+            val query = text.toString().trim()
+            cardViewModel.searchCards(query)
+        }
+
+        cardViewModel.searchResults.observe(viewLifecycleOwner, Observer { results ->
+            adapter.submitList(results)
+        })
+
         cardViewModel.cardsList.observe(viewLifecycleOwner, Observer { cards ->
             Log.d("CardFragment", "observer $cards")
             adapter.submitList(cards)
         })
 
-        val offlineTextView = rootView.findViewById<TextView>(R.id.offlineTextView)
+//        val offlineTextView = rootView.findViewById<TextView>(R.id.offlineTextView)
 
         if (isNetworkAvailable()) {
             lifecycleScope.launch {
                 cardViewModel.fetchCards()
             }
-        } else {
-            offlineTextView.visibility = View.VISIBLE
+        }
+        if(!isNetworkAvailable()){
+//            offlineTextView.visibility = View.VISIBLE
             cardViewModel.loadCardsFromDatabase()
         }
         networkChangeReceiver = NetworkChangeReceiver()

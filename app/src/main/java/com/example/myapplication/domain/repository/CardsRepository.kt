@@ -44,6 +44,14 @@ class CardsRepository() {
         }
     }
 
+    suspend fun searchCards(query: String): List<Card> {
+        return cardDao.searchCards(query)
+    }
+
+    suspend fun getAllcard() : List<Card> {
+        return cardDao.getCardsData()
+    }
+
     suspend fun getCardsFromApi(): List<Card> {
         val response = CardSource.cardSource.getCardsData2()
         val cards = response.body() ?: Cards()

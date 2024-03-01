@@ -23,6 +23,15 @@ import kotlin.collections.filter
 
 class CardViewModel(private val repository: CardsRepository) : ViewModel()  {
 
+    private val _searchResults = MutableLiveData<List<Card>>()
+    val searchResults: LiveData<List<Card>> = _searchResults
+
+    fun searchCards(query: String) {
+        viewModelScope.launch {
+            val results = repository.searchCards(query)
+            _searchResults.postValue(results)
+        }
+    }
     @Suppress("unused")
     constructor() : this(CardsRepository()) {
     }
@@ -80,7 +89,8 @@ class CardViewModel(private val repository: CardsRepository) : ViewModel()  {
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                val cards = cardDao.getCardsData()
+//             val cards = cardDao.getCardsData()
+               val cards = repository.getAllcard()
                 _cardsList.postValue(cards)
             } catch (e: Exception) {
                 e.printStackTrace()

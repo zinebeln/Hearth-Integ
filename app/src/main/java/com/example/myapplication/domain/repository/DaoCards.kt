@@ -13,7 +13,10 @@ interface DaoCards {
     @Query("SELECT * FROM Card LIMIT 10000")
     fun getCardsData2():List<Card>
     @Query("SELECT * FROM Card LIMIT 10000")
-    fun getCardsData():List<Card>
+    suspend fun getCardsData():List<Card>
+
+    @Query("SELECT * FROM Card WHERE Card.name LIKE '%' || :query || '%'")
+    suspend fun searchCards(query: String): List<Card>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCards(cards : List<Card>)

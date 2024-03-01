@@ -63,7 +63,19 @@
 <!--        android:src="@drawable/titre" />-->
 
 
-    <androidx.recyclerview.widget.RecyclerView
+        <EditText
+            android:id="@+id/searchEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Search by name"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:textColorHighlight="@color/colorNotFavorite"
+            android:textColorHint="#FFFFFF"
+            android:textColorLink="@color/thirdColor"
+            android:textSize="14sp" />
+
+        <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/cardRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -73,7 +85,8 @@
 
           />
 
-    <!--        android:padding="8dp"-->
+
+        <!--        android:padding="8dp"-->
     <!--        android:clipToPadding="false"-->
     <!--        android:background="#F5F5F5"-->
     <!--        android:layout_marginBottom="55dp"-->
@@ -103,16 +116,16 @@
 <!--        android:layout_alignParentBottom="true"-->
 <!--        app:menu="@menu/menu_card" />-->
 
-    <TextView
-        android:id="@+id/offlineTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Vous êtes hors connexion"
-        android:visibility="gone"
-        android:textColor="@color/colorFavorite"
-        android:layout_gravity="center"
-        android:layout_marginTop="16dp"
-        android:textSize="16sp"/>
+<!--    <TextView-->
+<!--        android:id="@+id/offlineTextView"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Vous êtes hors connexion"-->
+<!--        android:visibility="gone"-->
+<!--        android:textColor="@color/colorFavorite"-->
+<!--        android:layout_gravity="center"-->
+<!--        android:layout_marginTop="16dp"-->
+<!--        android:textSize="16sp"/>-->
 
 
 
