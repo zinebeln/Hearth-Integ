@@ -14,7 +14,6 @@ import com.example.myapplication.model.DecksCard
 interface DecksDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDeckCard(decksCard: DecksCard)
-
     @Delete
     suspend fun deleteDecksCard(decksCard: DecksCard)
 
@@ -24,7 +23,6 @@ interface DecksDao {
     @Query("SELECT * FROM decks_cards WHERE cardId = :cardId")
     suspend fun getDecksCardById(cardId: String): DecksCard?
 
-    //changement ici
     @Query("SELECT * FROM decks_cards WHERE userId = :userId")
     fun getDeckCardsForUser(userId: Long): LiveData<List<DecksCard>>
 

@@ -31,7 +31,7 @@ class UserViewModel (private val userRepository: UserRepository) : ViewModel()  
     fun registerAndLoginUser() {
         viewModelScope.launch {
 
-            val userToRegister = User(username = "tutu", password = "mot_de_passe")
+            val userToRegister = User(username = "tutu", password = "mot_de_passe", profileImagePath = "")
             userRepository.registerUser(userToRegister)
             val loggedInUser = userRepository.getUserByUsername("tutu")
             _userLoggedIn.value = loggedInUser != null
@@ -39,7 +39,7 @@ class UserViewModel (private val userRepository: UserRepository) : ViewModel()  
     }
 
     fun register(username: String, password: String) {
-        val user = User(username = username, password = password)
+        val user = User(username = username, password = password, profileImagePath = "")
         viewModelScope.launch {
             userRepository.registerUser(user)
         }

@@ -15,7 +15,7 @@ import retrofit2.Response
 
 class CardsRepository() {
 
-    val cardDao = AppDatabase.getDatabase().cardDao()
+    private val cardDao = AppDatabase.getDatabase().cardDao()
 
     @SuppressLint("SuspiciousIndentation")
     suspend fun getCards(): Flow<Cards> = flow {

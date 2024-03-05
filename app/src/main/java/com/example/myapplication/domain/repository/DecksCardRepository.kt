@@ -7,7 +7,7 @@ import dataBase.AppDatabase
 
 class DecksCardRepository() {
 
-    val decksCardDao = AppDatabase.getDatabase().decksDao();
+    private val decksCardDao = AppDatabase.getDatabase().decksDao();
 
     suspend fun insertDecksCard(decksCard: DecksCard) {
         decksCardDao.insertDeckCard(decksCard)
@@ -19,11 +19,9 @@ class DecksCardRepository() {
     suspend fun deleteDeckCard(decksCard: DecksCard) {
         decksCardDao.deleteDecksCard(decksCard)
     }
-
     suspend fun getIdDeckCard(cardId: String){
         decksCardDao.getDecksCardById(cardId)
     }
-
     fun getAllDecksCards(): LiveData<List<DecksCard>> {
         return decksCardDao.getAllDeckCards()
     }
@@ -36,7 +34,6 @@ class DecksCardRepository() {
     suspend fun getFavoriteCards(): List<DecksCard> {
         return decksCardDao.getFavoriteCards()
     }
-
     suspend fun addToFavorites(userId: Long, cardsId: String, card: Card) {
         // Vérifiez si la carte n'est pas déjà dans les favoris de l'utilisateur
         if (decksCardDao.getDecksCardById(cardsId) == null) {
@@ -46,7 +43,4 @@ class DecksCardRepository() {
             insertDecksCard(decksCard)
         }
     }
-
-
-
 }

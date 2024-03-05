@@ -15,5 +15,7 @@ data class User(
 //    @ColumnInfo(name = "Id") val id: String = UUID.randomUUID().toString(),
     var password: String,
 //    val isLoggedIn: Boolean = false
-    val isLoggedIn: Boolean = false // Champ pour indiquer si l'utilisateur est connecté
+    val isLoggedIn: Boolean = false,// Champ pour indiquer si l'utilisateur est connecté
+    var profileImagePath: String? // Champ pour stocker le chemin de l'image de profil
+
 )

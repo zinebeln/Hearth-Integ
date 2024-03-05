@@ -101,8 +101,8 @@ class UserFragment : Fragment() {
 
                     // Mettre à jour le statut isLoggedIn dans la base de données
 
-                    val newUserr= User(username = username, password = password, isLoggedIn = true)
-                    val newUser = User(username = username, password = password)
+                    val newUserr= User(username = username, password = password, isLoggedIn = true, profileImagePath = "")
+                    val newUser = User(username = username, password = password, profileImagePath = "")
                     auth.setUser(newUserr)
 
                     lifecycleScope.launch {

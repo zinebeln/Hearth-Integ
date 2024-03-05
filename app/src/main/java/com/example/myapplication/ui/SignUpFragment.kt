@@ -58,7 +58,7 @@ class SignUpFragment : Fragment() {
             else {
 
 
-                val newUser = User(username = newUsername, password = newPassword)
+                val newUser = User(username = newUsername, password = newPassword, profileImagePath = "")
 
                 // Insérer le nouvel utilisateur dans la base de données
                 lifecycleScope.launch {

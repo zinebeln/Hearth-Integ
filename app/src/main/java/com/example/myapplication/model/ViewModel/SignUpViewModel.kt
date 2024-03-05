@@ -23,11 +23,11 @@ class SignUpViewModel(private val userRepository: UserRepository) : ViewModel() 
             return false
         }
         // Le nom d'utilisateur est disponible, insérez le nouvel utilisateur dans la base de données
-        userRepository.insertUser(User(username = username, password = password))
+        userRepository.insertUser(User(username = username, password = password, profileImagePath = ""))
         return true
     }
     suspend fun signUp(username: String, password: String): Long {
-        val newUser = User(username = username, password = password)
+        val newUser = User(username = username, password = password, profileImagePath = "")
         return userRepository.insertUser(newUser)
     }
 }
