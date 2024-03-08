@@ -126,4 +126,8 @@
         android:id="@+id/action_open_decks_fragment"
         app:destination="@id/section2Fragment" />
 
+    <action
+        android:id="@+id/action_change_password_to_profil_fragment"
+        app:destination="@id/section3Fragment" />
+
 </navigation>

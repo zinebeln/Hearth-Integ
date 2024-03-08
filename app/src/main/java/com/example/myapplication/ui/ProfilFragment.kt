@@ -4,12 +4,15 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
@@ -21,6 +24,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager.TAG
 import androidx.fragment.app.viewModels
@@ -47,6 +51,12 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
+import java.io.OutputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.UUID
 
 class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
@@ -150,7 +160,7 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
         }
 
         view.findViewById<Button>(R.id.btnAddCamPhoto).setOnClickListener {
-            // openCamera()
+            checkCameraPermission()
         }
 
         viewModel.getUserImageUri(username).observe(viewLifecycleOwner) { uri ->
@@ -189,6 +199,91 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
     }
 
 
+    private fun checkCameraPermission() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(Manifest.permission.CAMERA), 2)
+        } else {
+            Log.d("check", "appel open")
+            openCamera()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 2 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            openCamera()
+        } else {
+            Toast.makeText(context, "Permission Camera refusée", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    @Throws(IOException::class)
+    private fun createImageFile(): File {
+        // Créez un nom de fichier image
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val storageDir: File? = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile(
+            "JPEG_${timeStamp}_", /* prefix */
+            ".jpg", /* suffix */
+            storageDir /* directory */
+        ).apply {
+            // Sauvegardez un chemin de fichier pour l'utiliser avec les actions de l'Intent
+            imageUri = absolutePath
+        }
+    }
+
+    private fun openCamera() {
+
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        Log.d("open", "dans open ${intent}")
+        if (intent.resolveActivity(requireActivity().packageManager) != null) {
+            // Créez un fichier image
+            Log.d("open if", "dans open")
+            val photoFile: File? = try {
+                createImageFile()
+            } catch (ex: IOException) {
+                // Gestion des erreurs en cas de création de fichier échouée
+                Log.d("execption", "Path: ${ex}")
+                null
+            }
+            Log.d("open photo", "dans open ${photoFile}")
+            // Continuez seulement si le fichier a été créé avec succès
+            photoFile?.also {
+                val photoURI: Uri = FileProvider.getUriForFile(
+                    this.requireContext(),
+                    "${this.requireContext().packageName}.provider", it
+                )
+                Log.d("open uri", "Path: ${photoURI}")
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                startActivityForResult(intent, 2)
+            }
+        }
+    }
+
+
+    private fun saveImageToInternalStorage(bitmap: Bitmap): Uri? {
+        // ContextWrapper vous donne accès au chemin du dossier de l'application
+        val wrapper = ContextWrapper(this.requireContext())
+
+        // Créer un dossier pour sauvegarder l'image
+        var file = wrapper.getDir("images", Context.MODE_PRIVATE)
+        file = File(file, "${UUID.randomUUID()}.jpg")
+
+        try {
+            // Utilisez un flux de sortie pour écrire le fichier
+            val stream: OutputStream = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+            stream.flush()
+            stream.close()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+
+        // Retournez le chemin vers l'image
+        return Uri.parse(file.absolutePath)
+    }
+
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 1 && resultCode == Activity.RESULT_OK && data != null) {
@@ -196,6 +291,14 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
             Log.d("Saved on act data", "Path: ${data.data}")
             selectedImageUri?.let {
 
+                imageUri = it.toString()
+                viewModel.setImageUri(it.toString())
+                Log.d("Saved on act", "Path: ${it}")
+            }
+        } else if (requestCode == 2 && data != null) {
+            val photo = data.extras?.get("data") as Bitmap
+            val savedUri = saveImageToInternalStorage(photo)
+            savedUri?.let {
                 imageUri = it.toString()
                 viewModel.setImageUri(it.toString())
                 Log.d("Saved on act", "Path: ${it}")
@@ -232,22 +335,22 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
                 }
         }
     }
-    override fun onRequestPermissionsResult(
-    requestCode: Int,
-    permissions: Array<out String>,
-    grantResults: IntArray
-) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    when (requestCode) {
-        1 -> {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getCurrentLocationn()
-            } else {
-                Toast.makeText(requireContext(), "L'autorisation de localisation a été refusée", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-}
+//    override fun onRequestPermissionsResult(
+//    requestCode: Int,
+//    permissions: Array<out String>,
+//    grantResults: IntArray
+//) {
+//    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+//    when (requestCode) {
+//        1 -> {
+//            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                getCurrentLocationn()
+//            } else {
+//                Toast.makeText(requireContext(), "L'autorisation de localisation a été refusée", Toast.LENGTH_SHORT).show()
+//            }
+//        }
+//    }
+//}
 
     @SuppressLint("RestrictedApi")
     override fun onMapReady(googleMap: GoogleMap) {
@@ -308,6 +411,7 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
         if (imagePath != null) {
             Glide.with(requireContext())
                 .load(imagePath)
+                .circleCrop()
                 .into(imageProfile)
             imageProfile.visibility = View.VISIBLE
            Log.d("Image Loading", "Chargement de l'image à partir du chemin : $imagePath")

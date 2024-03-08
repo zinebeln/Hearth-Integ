@@ -28,22 +28,22 @@
 
         android:src="@drawable/titre" />
 
-    <EditText
-        android:id="@+id/etNewUsername"
-        android:layout_width="247dp"
-        android:layout_height="60dp"
-        android:layout_below="@id/titre"
-        android:layout_gravity="center_vertical"
-        android:layout_marginTop="16dp"
-        android:layout_marginLeft="85dp"
-        android:background="@drawable/rounded_edittext_style"
-        android:drawableLeft="@drawable/baseline_account_box_24"
-        android:drawablePadding="8dp"
-        android:hint="Nom d'utilisateur"
-        android:inputType="text"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp" />
 
+        <EditText
+            android:id="@+id/etNewUsername"
+            android:layout_width="247dp"
+            android:layout_height="60dp"
+            android:layout_below="@id/titre"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="85dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/rounded_edittext_style"
+            android:drawableLeft="@drawable/baseline_account_box_24"
+            android:drawablePadding="8dp"
+            android:hint="Nom d'utilisateur"
+            android:inputType="text"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/PasswordTextInputLayout"
@@ -104,12 +104,12 @@
         <Button
             android:id="@+id/btnSignUp"
             android:layout_width="350dp"
-            android:layout_marginLeft="18dp"
-            android:layout_marginBottom="16dp"
-            android:layout_marginTop="50dp"
-            android:layout_below="@id/confirmPasswordTextInputLayout"
-            android:background="@drawable/rounded_button_background"
             android:layout_height="wrap_content"
+            android:layout_below="@id/confirmPasswordTextInputLayout"
+            android:layout_marginLeft="18dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/rounded_button_background"
             android:text="Creer un compte" />
 
     </LinearLayout>
