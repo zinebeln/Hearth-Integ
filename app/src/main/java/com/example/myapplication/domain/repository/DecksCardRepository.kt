@@ -35,11 +35,9 @@ class DecksCardRepository() {
         return decksCardDao.getFavoriteCards()
     }
     suspend fun addToFavorites(userId: Long, cardsId: String, card: Card) {
-        // Vérifiez si la carte n'est pas déjà dans les favoris de l'utilisateur
+
         if (decksCardDao.getDecksCardById(cardsId) == null) {
-            // Créez un nouveau DecksCard avec l'ID de l'utilisateur et l'ID de la carte
             val decksCard = DecksCard(userId = userId, cardsId = cardsId, card = card)
-            // Insérez la nouvelle carte dans la base de données
             insertDecksCard(decksCard)
         }
     }

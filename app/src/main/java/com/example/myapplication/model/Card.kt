@@ -24,16 +24,11 @@ data class Card(
     val faction: String?,
     val rarity: String?,
     @ColumnInfo(name = "img") val img: String?,
-//    val mechanics: List<Mechanic>?,
     val spellSchool: String?,
     val race: String?,
     val elite: Boolean?,
     var isFavorite: Boolean = false
 ) : Serializable
-@Entity
-data class Mechanic(
-    val name: String
-)
 @Entity
 data class Cards(val Basic: List<Card> = emptyList())
 

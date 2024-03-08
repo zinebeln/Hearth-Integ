@@ -4,11 +4,8 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import android.content.ContextWrapper
 import android.content.Intent
-import android.content.IntentSender
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.location.Location
 import android.net.Uri
@@ -28,7 +25,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager.TAG
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -36,15 +32,9 @@ import com.bumptech.glide.Glide
 import com.example.myapplication.R
 import com.example.myapplication.domain.repository.UserRepository
 import com.example.myapplication.model.User
-import com.example.myapplication.model.ViewModel.AuthViewModel
 import com.example.myapplication.model.ViewModel.ProfilViewModel
-import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.LocationSettingsRequest
-import com.google.android.gms.location.LocationSettingsResponse
-import com.google.android.gms.location.SettingsClient
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -52,33 +42,26 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.launch
-import org.checkerframework.checker.units.qual.C
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private lateinit var textUsername: TextView
     private val viewModel: ProfilViewModel by viewModels()
     private lateinit var authViewModel: AuthManager
-    private lateinit var userObserver: Observer<User>
     private lateinit var userRepository: UserRepository
     private lateinit var imageProfile: ImageView
-
     private lateinit var mapFragment: SupportMapFragment
     private lateinit var mGoogleMap: GoogleMap
-    private val FINE_PERMISSION_CODE = 1;
     private lateinit var lastLocation : Location;
+    private lateinit var imageUri : String;
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient;
-    private val permissionCode = 101;
+
+    private
 
     companion object {
         private const val REQUEST_CHECK_SETTINGS = 1001
@@ -99,9 +82,6 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
         mapFragment.getMapAsync(this)
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this.requireActivity())
-
-     //  requestLocationPermission()
-//        getCurrentLocationn()
 
         val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
         val username = sharedPref.getString("username", "") ?: ""
@@ -142,27 +122,60 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
             Log.d("ProfilFragment", "Navigate to UserFragment: $shouldNavigate")
             if (shouldNavigate) {
                 findNavController().navigate(R.id.action_profilFragment_to_userFragment)
-                // Indiquez au ViewModel que la navigation a été effectuée
                 viewModel.onUserFragmentNavigated()
             }
         })
 
         view.findViewById<Button>(R.id.btnAddPhoto).setOnClickListener {
-            openImagePicker()
+//            openImagePicker()
+            val galleryIntent =
+                Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            startActivityForResult(galleryIntent, 1)
+
+            lifecycleScope.launch {
+                try {
+                    val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
+                    val username = sharedPref.getString("username", "") ?: ""
+                    Log.d("Saved  uriii ", "Path: ${imageUri}")
+                    val userId = viewModel.getId(username)
+                    if (userId != null && imageUri != null) {
+                        viewModel.updateProfileImage(userId!!, imageUri!!)
+                    } else {
+                        Log.d("erreur", "Path: ")
+                    }
+                } catch (e: Exception) {
+                    Log.d("execption", "Path: ${e}")
+                }
+            }
         }
 
         view.findViewById<Button>(R.id.btnAddCamPhoto).setOnClickListener {
             // openCamera()
         }
+
+        viewModel.getUserImageUri(username).observe(viewLifecycleOwner) { uri ->
+            uri?.let {
+                loadImageFromPath(it)
+            }
+        }
+
        viewModel.imageUri.observe(viewLifecycleOwner) { uri ->
             uri?.let {
                 Log.d("Saved", "Path: ${uri}")
-                val newPath = saveImageFromUri(Uri.parse(uri))
-                if (newPath != null) {
-                    loadImageFromPath(newPath)
-                } else {
-                    imageProfile.setImageResource(R.drawable.ic_profil)
+                lifecycleScope.launch {
+                    val newPath = saveImageFromUri(Uri.parse(uri))
+                    if (newPath != null) {
+                        loadImageFromPath(newPath)
+                        val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
+                        val username = sharedPref.getString("username", "") ?: ""
+                        val userId = viewModel.getId(username)
+                        viewModel.updateProfileImage(userId, newPath)
+                    } else {
+                        imageProfile.setImageResource(R.drawable.ic_profil)
+                    }
+
                 }
+
             }
         }
 
@@ -175,28 +188,27 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
         return view
     }
 
-//
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 1 && resultCode == Activity.RESULT_OK && data != null) {
+            val selectedImageUri = data.data
+            Log.d("Saved on act data", "Path: ${data.data}")
+            selectedImageUri?.let {
+
+                imageUri = it.toString()
+                viewModel.setImageUri(it.toString())
+                Log.d("Saved on act", "Path: ${it}")
+            }
+        }
+    }
+
+
     private fun showUserLocationOnMap(latitude: Double, longitude: Double) {
     Timber.tag("coord show").d("coord " + longitude + ")")
         val userLatLng = LatLng(latitude, longitude)
     mGoogleMap?.addMarker(MarkerOptions().position(userLatLng).title("Votre position"))
     mGoogleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 15f)) // Zoom sur la position de l'utilisateur
-    }
-
-    private fun requestLocationPermission() {
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                1001
-            )
-        } else {
-            getCurrentLocationn()
-        }
     }
 
     @SuppressLint("RestrictedApi")
@@ -208,24 +220,18 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
         ) {
             fusedLocationProviderClient.lastLocation
                 .addOnSuccessListener { location: Location? ->
-                    // Obtenez la localisation actuelle ici
                     location?.let {
                         val latitude = it.latitude
                         val longitude = it.longitude
                         Timber.tag("coord").d("coord " + longitude + ")")
-                        // Utilisez les coordonnées pour afficher la localisation de l'utilisateur sur la carte
-
                         showUserLocationOnMap(latitude, longitude)
                     }
                 }
                 .addOnFailureListener { e ->
-                    // Gérer les erreurs lors de l'obtention de la localisation
                     Timber.tag(TAG).e("Erreur lors de l'obtention de la localisation: " + e.message)
                 }
         }
     }
-
-
     override fun onRequestPermissionsResult(
     requestCode: Int,
     permissions: Array<out String>,
@@ -233,40 +239,25 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
 ) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     when (requestCode) {
-        1001 -> {
+        1 -> {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // L'utilisateur a accordé l'autorisation de localisation, obtenez la localisation
                 getCurrentLocationn()
             } else {
-                // L'utilisateur a refusé l'autorisation de localisation, gérez cela en conséquence
                 Toast.makeText(requireContext(), "L'autorisation de localisation a été refusée", Toast.LENGTH_SHORT).show()
-                // Vous pouvez afficher un message à l'utilisateur ou prendre d'autres mesures en conséquence
             }
         }
     }
 }
 
-
-
     @SuppressLint("RestrictedApi")
     override fun onMapReady(googleMap: GoogleMap) {
-
-        // Assurez-vous que l'objet GoogleMap est initialisé correctement
         mGoogleMap = googleMap
         mGoogleMap.uiSettings.isZoomControlsEnabled = true
         mGoogleMap.setOnMarkerClickListener(this)
         setUpMap()
-       // getCurrentLocationn()
-
-        // Configurez la carte comme vous le souhaitez
-//        googleMap.mapType = GoogleMap.MAP_TYPE_NORMAL
-//
-//        googleMap.uiSettings.isZoomControlsEnabled = true
-//        googleMap.uiSettings.isRotateGesturesEnabled = true
-    }
+   }
 
     private fun setUpMap (){
-
         if (ActivityCompat.checkSelfPermission(this.requireContext(), Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
                 this.requireContext(),
@@ -286,16 +277,16 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
                 val currentLatLng = LatLng(location.latitude, location.longitude)
                 placeMarkerOnMap(currentLatLng)
                 mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 12f))
+
             }
         }
     }
 
     private fun placeMarkerOnMap(currentLatLng: LatLng) {
         val markerOptions = MarkerOptions().position(currentLatLng)
-        markerOptions.title("$currentLatLng")
+        markerOptions.title("My position")
         mGoogleMap.addMarker(markerOptions)
     }
-
 
     private fun saveImageFromUri(uri: Uri): String? {
         try {
@@ -328,42 +319,27 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
     private fun openImagePicker() {
         val galleryIntent = Intent(Intent.ACTION_GET_CONTENT)
         galleryIntent.type = "image/*"
-        startActivityForResult(galleryIntent, 1001)
+        startActivityForResult(galleryIntent, 1)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == 1001 && resultCode == Activity.RESULT_OK) {
-            data?.data?.let { uri ->
-                Log.d("Saved on act ", "Path: ${uri.toString()}")
-               // viewModel.setImageUri(uri.toString())
-                //viewModel.setImage(uri.toString())
-                saveProfileImageToDatabase(uri.toString())
-            }
-        }
-    }
-    private fun saveProfileImageToDatabase(imagePath: String) {
-        val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
-        val username = sharedPref.getString("username", "") ?: ""
-        val password = sharedPref.getString("password", "") ?: ""
-
-      lifecycleScope.launch {
-            val userId = userRepository.getUserId(username)
-            Log.d("Saved pathhh", "Path: ${imagePath}")
-            if (userId != null) {
-                // L'utilisateur existe déjà, mettre à jour l'image de profil
-                userRepository.updateUserProfileImage(userId, imagePath)
-                val p = userRepository.getProfileImagePath(username)
-                if (p != null) {
-                    viewModel.setImageUri(p)
-                }
-            }
-        }
-    }
+//    private fun saveProfileImageToDatabase(imagePath: String) {
+//        val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
+//        val username = sharedPref.getString("username", "") ?: ""
+//
+//      lifecycleScope.launch {
+//            val userId = userRepository.getUserId(username)
+//            Log.d("Saved pathhh", "Path: ${imagePath}")
+//            if (userId != null) {
+//                userRepository.updateUserProfileImage(userId, imagePath)
+//                val p = userRepository.getProfileImagePath(username)
+//                if (p != null) {
+//                    viewModel.setImageUri(p)
+//                }
+//            }
+//        }
+//    }
 
     private fun deconnexionUtilisateur() {
-
         val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
         with (sharedPref.edit()) {
             remove("username")

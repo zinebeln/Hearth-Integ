@@ -87,6 +87,7 @@ dependencies {
     implementation 'androidx.fragment:fragment:1.6.2'
     implementation 'androidx.compose.material3:material3:1.1.2'
     implementation 'com.google.android.gms:play-services-maps:18.2.0'
+    implementation 'org.chromium.net:cronet-embedded:119.6045.31'
 
 //    implementation 'com.google.android.engage:engage-core:+'
 //    implementation 'com.google.ar.sceneform:filament-android:1.17.1'
@@ -145,6 +146,7 @@ dependencies {
     // Dépendance pour la carte Google Maps Android API
     implementation 'com.google.android.gms:play-services-maps:18.0.0' // Vous pouvez utiliser la dernière version disponible
 
+    implementation 'com.google.android.gms:play-services-maps:18.0.0'
 
 
 

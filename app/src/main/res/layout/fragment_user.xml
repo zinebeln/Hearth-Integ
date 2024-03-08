@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     >
 
-    <!-- ImageView pour l'image de fond -->
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -13,39 +12,17 @@
         android:contentDescription="@null"
         android:background="@android:color/black"/>
 
-<!--<LinearLayout-->
-<!--    xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
-<!--    xmlns:tools="http://schemas.android.com/tools"-->
-<!--    android:layout_width="match_parent"-->
-<!--    android:layout_height="match_parent"-->
-<!--    android:orientation="vertical"-->
-<!--    android:padding="16dp"-->
-<!--    >-->
-<!--    tools:context=".UserFragment"-->
-
-    <!-- ImageView pour le titre -->
-
-
     <LinearLayout
         android:id="@+id/btn"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="340dp"
             android:layout_marginBottom="1dp"
-
             android:src="@drawable/titre" />
-
-        <!--        <EditText-->
-        <!--            android:id="@+id/etUsername"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:hint="Nom d'utilisateur" />-->
 
         <EditText
             android:id="@+id/etUsername"

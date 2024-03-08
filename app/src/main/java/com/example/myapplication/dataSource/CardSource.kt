@@ -10,18 +10,18 @@ import java.util.concurrent.TimeUnit
 
 object CardSource {
 
-        val intercepter = HttpLoggingInterceptor().apply {
+        private val intercepter = HttpLoggingInterceptor().apply {
             this.level = HttpLoggingInterceptor.Level.BODY
         }
-        val client = OkHttpClient.Builder().apply {
+        private val client = OkHttpClient.Builder().apply {
             this.addInterceptor(intercepter)
             this.connectTimeout(2, TimeUnit.MINUTES)
             this.readTimeout(2, TimeUnit.MINUTES)
             this.writeTimeout(2, TimeUnit.MINUTES)
         }.build()
 
-        val gson = GsonBuilder().setLenient().create()
-        val retrofit = Retrofit.Builder()
+        private val gson = GsonBuilder().setLenient().create()
+        private val retrofit = Retrofit.Builder()
             .client(client)
             .baseUrl("https://omgvamp-hearthstone-v1.p.rapidapi.com/")
             .addConverterFactory(GsonConverterFactory.create(gson))

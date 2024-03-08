@@ -16,27 +16,12 @@ import retrofit2.Response
 class CardsRepository() {
 
     private val cardDao = AppDatabase.getDatabase().cardDao()
-
-    @SuppressLint("SuspiciousIndentation")
-    suspend fun getCards(): Flow<Cards> = flow {
-        try {
-            val response = CardSource.cardSource.getCardsData2()
-            if (response.isSuccessful) {
-                val cards = response.body() ?: Cards()
-                cardDao.insertCards(cards.Basic)
-                emit(cards)
-            } else {
-                emit(Cards())
-            }
-            Log.d("API_INFO", "All cards in fetchCards card repository: $response")
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-
     suspend fun searchCards(query: String): List<Card> {
         return cardDao.searchCards(query)
+    }
+
+    suspend fun insertCards(cards : List<Card>) {
+        return cardDao.insertCards(cards)
     }
 
     suspend fun getAllcard() : List<Card> {

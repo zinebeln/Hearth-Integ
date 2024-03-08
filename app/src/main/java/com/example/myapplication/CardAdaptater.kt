@@ -24,20 +24,14 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.example.myapplication.model.ViewModel.SharedViewModel
 
-
 class CardAdaptater : ListAdapter<Card, CardAdaptater.ViewHolder>(CardDiffCallback()) {
 
     private var onItem: OnItemClickListener? = null
-    private lateinit var sharedViewModel: SharedViewModel
 
     private val imageNamess =
         listOf("imagun", "imagedeux", "imagetrois", "imagecinq", "imagesix")
-
-//    private lateinit var onI: SharedViewModel
-
     interface OnItemClickListener {
         fun onItemClick(card: Card)
-
     }
 
     fun setOnItemClickListener(listener: OnItemClickListener) {
@@ -55,9 +49,7 @@ class CardAdaptater : ListAdapter<Card, CardAdaptater.ViewHolder>(CardDiffCallba
                 if (position != RecyclerView.NO_POSITION) {
                     val card = getItem(position)
                     onItem?.onItemClick(card)
-                    //listener?.onItemClick(card)
                 }
-
             }
         }
 
@@ -67,7 +59,6 @@ class CardAdaptater : ListAdapter<Card, CardAdaptater.ViewHolder>(CardDiffCallba
 
         val itemView =
             LayoutInflater.from(parent.context).inflate(R.layout.item_card, parent, false)
-
         return ViewHolder(itemView)
     }
 
@@ -76,7 +67,6 @@ class CardAdaptater : ListAdapter<Card, CardAdaptater.ViewHolder>(CardDiffCallba
         val card = getItem(position)
         holder.cardName.text = card.name
         holder.cardType.text = card.type
-
 
         if (card.img != null) {
             Glide.with(holder.itemView)
@@ -93,25 +83,20 @@ class CardAdaptater : ListAdapter<Card, CardAdaptater.ViewHolder>(CardDiffCallba
                 holder.itemView.context.packageName
             )
 
-
             Glide.with(holder.itemView)
                 .load(resourceId)
                 .apply(RequestOptions().centerCrop())
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(holder.imageCard)
 
-
         }
-
-
-
     }
 
 }
 
 class CardDiffCallback : DiffUtil.ItemCallback<Card>() {
     override fun areItemsTheSame(oldItem: Card, newItem: Card): Boolean {
-        return oldItem.cardId == newItem.cardId // Assurez-vous que vous avez un moyen unique d'identifier les éléments
+        return oldItem.cardId == newItem.cardId
     }
 
     override fun areContentsTheSame(oldItem: Card, newItem: Card): Boolean {

@@ -9,8 +9,6 @@ import com.example.myapplication.model.Card
 
 class SharedViewModel : ViewModel() {
     private val _selectedCard = MutableLiveData<Card>()
-
-
     val selectedCard: LiveData<Card> get() = _selectedCard
     fun selectCard(card: Card) {
         Log.d("Sharedviewmodel", "select card $card")

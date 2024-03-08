@@ -28,16 +28,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.launch
 
 class DecksFragment : Fragment()  {
-   // private val deckViewModel: DecksViewModel by activityViewModels()
-   private var previousFavoriteCardsSize = 0
+
+    private var previousFavoriteCardsSize = 0
     private var previousFavoriteCards: List<DecksCard> = emptyList()
     private val deckViewModel: DecksViewModel by viewModels()
     private lateinit var decksAdapter: DecksAdapter
-//    private val decksAdapter = DecksAdapter()
-
-
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -51,14 +46,13 @@ class DecksFragment : Fragment()  {
                 showConfirmationDialog(decksCard)
             }
         })
-
-        val auth = AuthManager(requireContext()) // Remplacez par votre propre initialisation d'auth
+        val auth = AuthManager(requireContext())
         deckViewModel.init(auth)
         recyclerView.adapter = decksAdapter
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.apply {
-            layoutManager = GridLayoutManager(requireContext(), 2) // 2 colonnes, ajustez selon vos besoins
+            layoutManager = GridLayoutManager(requireContext(), 2)
         }
 
         val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
@@ -68,13 +62,7 @@ class DecksFragment : Fragment()  {
         deckViewModel.favoriteCards.observe(viewLifecycleOwner, Observer { favoriteCards ->
             decksAdapter.submitList(favoriteCards)
 
-            // Vérifier si une nouvelle carte a été ajoutée aux favoris
-            if (favoriteCards.size > previousFavoriteCardsSize) {
-                val newFavoriteCard = favoriteCards.last()
-              //  Toast.makeText(requireContext(), "Nouvelle carte ajoutée aux favoris: ${newFavoriteCard.card.name}", Toast.LENGTH_SHORT).show()
-            }
-            // Vérifier si une carte a été supprimée des favoris
-            else if (favoriteCards.size < previousFavoriteCardsSize) {
+            if (favoriteCards.size < previousFavoriteCardsSize) {
                 val removedFavoriteCard = previousFavoriteCards.last { it !in favoriteCards }
                 Toast.makeText(requireContext(), "Carte supprimée des favoris: ${removedFavoriteCard.card.name}", Toast.LENGTH_SHORT).show()
             }
@@ -87,14 +75,10 @@ class DecksFragment : Fragment()  {
         })
 
         deckViewModel.errorMessage.observe(viewLifecycleOwner, Observer { errorMessageResId ->
-            // Utilisez la ressource de chaîne pour afficher le message d'erreur
-            val errorMessage = getString(errorMessageResId.toInt())
-            Toast.makeText(requireContext(), "Erreur : doublons carte favoris", Toast.LENGTH_SHORT)
-            // Affichez le message d'erreur, par exemple, dans un Toast ou à l'aide d'une vue TextView
-        })
+         Toast.makeText(requireContext(), "Erreur : doublons carte favoris", Toast.LENGTH_SHORT)
+       })
 
         val navController = findNavController()
-        // Attachez le NavController au BottomNavigationView
         bottomNavigationView.setupWithNavController(navController)
         return view
     }
@@ -104,18 +88,12 @@ class DecksFragment : Fragment()  {
         builder.setTitle("Confirmation")
         builder.setMessage("Voulez-vous supprimer cette carte de vos favoris?")
         builder.setPositiveButton("Oui") { _, _ ->
-            // Supprimez la carte de vos favoris ici en appelant votre méthode de suppression.
             deckViewModel.delete(decksCard)
             Toast.makeText(requireContext(), "Carte supprimée des favoris", Toast.LENGTH_SHORT).show()
-            }
+        }
         builder.setNegativeButton("Non") { dialog, _ ->
             dialog.dismiss() }
-
         builder.show()
-    }
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
     }
 
 }

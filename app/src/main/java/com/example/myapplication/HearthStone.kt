@@ -4,8 +4,6 @@ import android.app.Application
 import android.content.Context
 import dataBase.AppDatabase
 
-
-
 class HearthStone : Application() {
     override fun onCreate() {
         super.onCreate()
@@ -13,5 +11,4 @@ class HearthStone : Application() {
         AppDatabase.initDatabase(applicationContext)
 
     }
-
 }

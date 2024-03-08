@@ -1,9 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--<navigation xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
-<!--    android:id="@+id/nav_graph.xml">-->
-
-<!--</navigation>-->
 
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -108,9 +103,6 @@
 
     </fragment>
 
-
-
-
     <action
         android:id="@+id/action_userFragment_to_cardFragment"
         app:destination="@id/cardFragment"
@@ -133,8 +125,5 @@
     <action
         android:id="@+id/action_open_decks_fragment"
         app:destination="@id/section2Fragment" />
-
-
-    <!-- Ajoutez d'autres destinations de navigation si nécessaire -->
 
 </navigation>

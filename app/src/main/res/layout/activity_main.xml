@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <!-- Conteneur pour le fragment de navigation -->
     <fragment
         android:id="@+id/nav_host_fragment"
         android:name="androidx.navigation.fragment.NavHostFragment"
@@ -16,40 +15,5 @@
         app:defaultNavHost="true"
         app:navGraph="@navigation/nav_graph" />
 
-
-
-<!--    <Button-->
-<!--        android:id="@+id/buttonOpenFragment"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="76dp"-->
-<!--        android:text="Open Fragment"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
-
-<!--    <FrameLayout-->
-<!--        xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--        android:id="@+id/container"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"/>-->
-
-<!--    <FrameLayout-->
-<!--        android:id="@+id/fragmentContainer"-->
-<!--        android:layout_width="416dp"-->
-<!--        android:layout_height="458dp"-->
-<!--        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/buttonOpenFragment"-->
-<!--        tools:ignore="MissingConstraints,UnknownId"-->
-<!--        tools:layout_editor_absoluteX="-5dp" />-->
-
-
-<!--    <com.google.android.material.bottomnavigation.BottomNavigationView-->
-<!--        android:id="@+id/bottomNavigation"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_alignParentBottom="true"-->
-<!--        app:menu="@menu/menu_card"-->
-<!--        tools:ignore="MissingConstraints" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

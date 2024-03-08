@@ -7,7 +7,7 @@ import com.google.gson.Gson
 class CardTypeConverter {
     @TypeConverter
     fun fromCard(card: Card): String {
-        // Convertir la carte en une représentation de chaîne (par exemple, JSON)
+        // Convertir la carte en une représentation json
         return Gson().toJson(card)
     }
 
