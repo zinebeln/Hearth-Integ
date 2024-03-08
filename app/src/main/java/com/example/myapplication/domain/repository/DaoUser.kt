@@ -37,7 +37,7 @@ interface DaoUser {
     @Query("SELECT userId FROM users WHERE username = :username")
     suspend fun getCurrentUserIdd(username: String): Long?
     @Query("UPDATE users SET profileImagePath = :imagePath WHERE userId = :userId")
-    suspend fun updateUserProfileImage(userId: Long, imagePath: String)
+    suspend fun updateUserProfileImage(userId: Long, imagePath: String?)
     @Delete
     suspend fun delete(user: User)
     @Query("SELECT * FROM users WHERE isLoggedIn = 1 LIMIT 1")

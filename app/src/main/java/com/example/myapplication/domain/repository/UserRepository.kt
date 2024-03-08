@@ -66,7 +66,7 @@ class UserRepository() {
         return userDao.getImgPaths(username)
     }
 
-    suspend fun updateUserProfileImage(userId: Long, imagePath: String) {
+    suspend fun updateUserProfileImage(userId: Long, imagePath: String?) {
         withContext(Dispatchers.IO) {
             userDao.updateUserProfileImage(userId, imagePath)
         }

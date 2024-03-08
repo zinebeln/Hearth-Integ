@@ -3,12 +3,12 @@ package com.example.myapplication.ui
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
@@ -35,7 +35,6 @@ import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
 import com.example.myapplication.R
 import com.example.myapplication.domain.repository.UserRepository
-import com.example.myapplication.model.User
 import com.example.myapplication.model.ViewModel.ProfilViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -136,6 +135,10 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
             }
         })
 
+        imageProfile.setOnClickListener {
+            showDeleteConfirmationDialog()
+        }
+
         view.findViewById<Button>(R.id.btnAddPhoto).setOnClickListener {
 //            openImagePicker()
             val galleryIntent =
@@ -196,6 +199,31 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
         bottomNavigationView.setupWithNavController(navController)
 
         return view
+    }
+
+    private fun showDeleteConfirmationDialog() {
+        AlertDialog.Builder(context)
+            .setTitle("Supprimer la photo")
+            .setMessage("Êtes-vous sûr de vouloir supprimer votre photo de profil ?")
+            .setPositiveButton("Supprimer") { dialog, which ->
+                deleteProfileImage()
+            }
+            .setNegativeButton("Annuler", null)
+            .show()
+    }
+
+    private fun deleteProfileImage() {
+        // Supprimez la photo de la base de données ou du stockage local
+        // Par exemple, si la photo est stockée en tant qu'URL dans la base de données :
+
+        lifecycleScope.launch {
+            val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
+            val username = sharedPref.getString("username", "") ?: ""
+            val userId = viewModel.getId(username)
+            viewModel.updateProfileImages(userId, null)
+           // Supposons que null signifie aucune image
+            imageProfile.setImageResource(R.drawable.ic_profil) // Remplacez par une image par défaut
+        }
     }
 
 
