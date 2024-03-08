@@ -1,6 +1,0 @@
-package dataBase
-
-object CardsDBDataSource {
-
-
-}
