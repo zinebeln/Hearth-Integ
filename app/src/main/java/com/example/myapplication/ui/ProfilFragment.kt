@@ -213,16 +213,12 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
     }
 
     private fun deleteProfileImage() {
-        // Supprimez la photo de la base de données ou du stockage local
-        // Par exemple, si la photo est stockée en tant qu'URL dans la base de données :
-
         lifecycleScope.launch {
             val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
             val username = sharedPref.getString("username", "") ?: ""
             val userId = viewModel.getId(username)
             viewModel.updateProfileImages(userId, null)
-           // Supposons que null signifie aucune image
-            imageProfile.setImageResource(R.drawable.ic_profil) // Remplacez par une image par défaut
+            imageProfile.setImageResource(R.drawable.ic_profil)
         }
     }
 
@@ -247,7 +243,6 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
 
     @Throws(IOException::class)
     private fun createImageFile(): File {
-        // Créez un nom de fichier image
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
         val storageDir: File? = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File.createTempFile(
@@ -255,7 +250,6 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
             ".jpg", /* suffix */
             storageDir /* directory */
         ).apply {
-            // Sauvegardez un chemin de fichier pour l'utiliser avec les actions de l'Intent
             imageUri = absolutePath
         }
     }
@@ -265,17 +259,14 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         Log.d("open", "dans open ${intent}")
         if (intent.resolveActivity(requireActivity().packageManager) != null) {
-            // Créez un fichier image
             Log.d("open if", "dans open")
             val photoFile: File? = try {
                 createImageFile()
             } catch (ex: IOException) {
-                // Gestion des erreurs en cas de création de fichier échouée
                 Log.d("execption", "Path: ${ex}")
                 null
             }
             Log.d("open photo", "dans open ${photoFile}")
-            // Continuez seulement si le fichier a été créé avec succès
             photoFile?.also {
                 val photoURI: Uri = FileProvider.getUriForFile(
                     this.requireContext(),
@@ -290,15 +281,12 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
 
 
     private fun saveImageToInternalStorage(bitmap: Bitmap): Uri? {
-        // ContextWrapper vous donne accès au chemin du dossier de l'application
         val wrapper = ContextWrapper(this.requireContext())
 
-        // Créer un dossier pour sauvegarder l'image
         var file = wrapper.getDir("images", Context.MODE_PRIVATE)
         file = File(file, "${UUID.randomUUID()}.jpg")
 
         try {
-            // Utilisez un flux de sortie pour écrire le fichier
             val stream: OutputStream = FileOutputStream(file)
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
             stream.flush()
@@ -306,8 +294,6 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
         } catch (e: IOException) {
             e.printStackTrace()
         }
-
-        // Retournez le chemin vers l'image
         return Uri.parse(file.absolutePath)
     }
 
@@ -363,23 +349,6 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
                 }
         }
     }
-//    override fun onRequestPermissionsResult(
-//    requestCode: Int,
-//    permissions: Array<out String>,
-//    grantResults: IntArray
-//) {
-//    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-//    when (requestCode) {
-//        1 -> {
-//            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                getCurrentLocationn()
-//            } else {
-//                Toast.makeText(requireContext(), "L'autorisation de localisation a été refusée", Toast.LENGTH_SHORT).show()
-//            }
-//        }
-//    }
-//}
-
     @SuppressLint("RestrictedApi")
     override fun onMapReady(googleMap: GoogleMap) {
         mGoogleMap = googleMap
@@ -453,23 +422,6 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
         galleryIntent.type = "image/*"
         startActivityForResult(galleryIntent, 1)
     }
-
-//    private fun saveProfileImageToDatabase(imagePath: String) {
-//        val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
-//        val username = sharedPref.getString("username", "") ?: ""
-//
-//      lifecycleScope.launch {
-//            val userId = userRepository.getUserId(username)
-//            Log.d("Saved pathhh", "Path: ${imagePath}")
-//            if (userId != null) {
-//                userRepository.updateUserProfileImage(userId, imagePath)
-//                val p = userRepository.getProfileImagePath(username)
-//                if (p != null) {
-//                    viewModel.setImageUri(p)
-//                }
-//            }
-//        }
-//    }
 
     private fun deconnexionUtilisateur() {
         val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
