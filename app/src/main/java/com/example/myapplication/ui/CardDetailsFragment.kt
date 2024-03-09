@@ -1,6 +1,8 @@
 package com.example.myapplication.ui
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,6 +13,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -28,6 +31,9 @@ import com.example.myapplication.domain.repository.UserRepository
 import com.example.myapplication.model.ViewModel.DecksViewModel
 import com.example.myapplication.model.ViewModel.SharedViewModel
 import kotlinx.coroutines.launch
+
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.qrcode.QRCodeWriter
 
 class CardDetailsFragment : Fragment()  {
 
@@ -63,6 +69,8 @@ class CardDetailsFragment : Fragment()  {
             super.onViewCreated(view, savedInstanceState)
 
         auth = AuthManager(requireContext())
+
+
 
         sharedViewModel.selectedCard?.observe(viewLifecycleOwner, Observer { selectedCard ->
             Log.d("CardDetailsFragment", "Selected Card: $selectedCard")
@@ -101,9 +109,36 @@ class CardDetailsFragment : Fragment()  {
                             }
                         }
                     }
+
+
+
+                    val textToEncode = it.dbfId.toString()
+                    val qrCodeBitmap = generateQRCode(textToEncode)
+
+                    val qrCodeImageView = view.findViewById<ImageView>(R.id.qrCodeImageView)
+                    qrCodeImageView.setImageBitmap(qrCodeBitmap)
+
                 }
 
+
+
+
+
         })
+    }
+
+    fun generateQRCode(text: String): Bitmap {
+        val writer = QRCodeWriter()
+        val bitMatrix = writer.encode(text, BarcodeFormat.QR_CODE, 512, 512)
+        val width = bitMatrix.width
+        val height = bitMatrix.height
+        val bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
+        for (x in 0 until width) {
+            for (y in 0 until height) {
+                bmp.setPixel(x, y, if (bitMatrix[x, y]) Color.BLACK else Color.WHITE)
+            }
+        }
+        return bmp
     }
 
 }
