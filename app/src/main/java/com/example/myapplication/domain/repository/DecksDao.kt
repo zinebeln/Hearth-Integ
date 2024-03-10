@@ -32,6 +32,11 @@ interface DecksDao {
     @Query("SELECT * FROM decks_cards WHERE isFavorite = 1")
     suspend fun getFavoriteCards(): List<DecksCard>
 
+    @Query("SELECT id FROM decks_cards WHERE isFavorite = 1")
+    suspend fun getFavoriteCardsID(): List<DecksCard>
+
+    @Query("DELETE FROM decks_cards WHERE userId = :userId AND cardId = :cardId")
+    suspend fun deleteUserCardCrossRef(userId: Long, cardId: String)
 
 
 }

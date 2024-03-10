@@ -11,11 +11,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
+import com.example.myapplication.CardAdaptater
 import com.example.myapplication.R
 import com.example.myapplication.model.DecksCard
 class DecksAdapter(private val listener: OnItemClickListener) : ListAdapter<DecksCard, DecksAdapter.ViewHolder>(DecksCardDiffCallback()) {
+
+    private var onItem: DecksAdapter.OnItemClickListener? = null
     interface OnItemClickListener {
         fun onItemClicked(decksCard: DecksCard)
+    }
+
+    fun setOnItemClickListener(listener: DecksAdapter.OnItemClickListener) {
+        this.onItem = listener
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)

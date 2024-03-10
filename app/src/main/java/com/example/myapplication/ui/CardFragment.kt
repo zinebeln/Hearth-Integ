@@ -10,6 +10,7 @@ import android.view.*
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -26,6 +27,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.myapplication.databinding.FragmentCardBinding
+import com.example.myapplication.domain.repository.DecksCardRepository
+import com.example.myapplication.domain.repository.UserRepository
+import com.example.myapplication.model.ViewModel.DecksViewModel
 import com.example.myapplication.model.ViewModel.SharedViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -33,11 +37,14 @@ class CardFragment : Fragment() {
 
     private val cardViewModel: CardViewModel by viewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
+    private val decksViewModel: DecksViewModel by viewModels()
     private lateinit var progressBar: ProgressBar
     private lateinit var adapter: CardAdaptater
     private lateinit var networkChangeReceiver: NetworkChangeReceiver
     private lateinit var intentFilter: IntentFilter
     private lateinit var binding: FragmentCardBinding
+    private lateinit var userRepository: UserRepository
+    private lateinit var decksRepos : DecksCardRepository
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -53,13 +60,31 @@ class CardFragment : Fragment() {
         val recyclerView = rootView.findViewById<RecyclerView>(R.id.cardRecyclerView)
         val editTextSearch = rootView.findViewById<EditText>(R.id.searchEditText)
 
+        userRepository = UserRepository()
+        decksRepos = DecksCardRepository()
         progressBar = rootView.findViewById(R.id.progressBar)
 
         cardViewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
             progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         })
 
-        adapter = CardAdaptater()
+        adapter = CardAdaptater().apply {
+            onStarClick = { card ->
+                val position = currentList.indexOf(card)
+                if (position != RecyclerView.NO_POSITION) {
+                    card.isFavorite = !card.isFavorite
+                    val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
+                    val username = sharedPref.getString("username", "") ?: ""
+                    lifecycleScope.launch {
+                        val userId = userRepository.getUserId(username)
+                        Toast.makeText(requireContext(), "Carte ajoutée aux favoris ", Toast.LENGTH_SHORT).show()
+                        notifyItemChanged(position)
+                        decksViewModel.toggleFavoriteStatus4(card, userId)
+                    }
+                }
+            }
+        }
+
         recyclerView.adapter = adapter
         recyclerView.apply {
             layoutManager = GridLayoutManager(requireContext(), 2)
@@ -75,6 +100,8 @@ class CardFragment : Fragment() {
         })
 
         cardViewModel.cardsList.observe(viewLifecycleOwner, Observer { cards ->
+//            val listDeck = decksViewModel.getFavCardID()
+//            val filteredCards = cards.filter { !listDeck.contains(it.cardId }
             adapter.submitList(cards)
         })
 
@@ -90,13 +117,6 @@ class CardFragment : Fragment() {
         networkChangeReceiver = NetworkChangeReceiver()
         intentFilter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
         requireContext().registerReceiver(networkChangeReceiver, intentFilter)
-
-        adapter.setOnItemClickListener(object : CardAdaptater.OnItemClickListener {
-            override fun onItemClick(card: Card) {
-                sharedViewModel.selectCard(card)
-               findNavController().navigate(R.id.action_cardFragment_to_cardDetailsFragment)
-            }
-        })
 
         val bottomNavigationView = rootView.findViewById<BottomNavigationView>(R.id.bottomNavigation)
         val navController = findNavController()
@@ -148,3 +168,5 @@ class CardFragment : Fragment() {
         return networkInfo != null && networkInfo.isConnected
     }
 }
+
+

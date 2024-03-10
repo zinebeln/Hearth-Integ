@@ -1,5 +1,6 @@
 package com.example.myapplication.ui
 
+import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -21,6 +22,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.fragment.findNavController
 import kotlinx.coroutines.launch
 
 import com.bumptech.glide.Glide
@@ -28,12 +30,15 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.example.myapplication.R
 import com.example.myapplication.domain.repository.UserRepository
+import com.example.myapplication.model.Card
+import com.example.myapplication.model.DecksCard
 import com.example.myapplication.model.ViewModel.DecksViewModel
 import com.example.myapplication.model.ViewModel.SharedViewModel
 import kotlinx.coroutines.launch
 
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.qrcode.QRCodeWriter
+import org.checkerframework.checker.units.qual.C
 
 class CardDetailsFragment : Fragment()  {
 
@@ -42,10 +47,13 @@ class CardDetailsFragment : Fragment()  {
 
     private lateinit var textViewCardName: TextView
     private lateinit var textViewCardType: TextView
+    private lateinit var textViewCardCost: TextView
+    private lateinit var textViewCardAttack: TextView
     private lateinit var imageViewCard: ImageView
     private lateinit var btnFav : Button
     private lateinit var auth: AuthManager
     private lateinit var userRepo : UserRepository
+
 
     private val imageNamess =
         listOf("imagun", "imagedeux", "imagetrois", "imagecinq", "imagesix")
@@ -58,8 +66,10 @@ class CardDetailsFragment : Fragment()  {
         Log.d("CardDetail", "onCreateView called")
         val view = inflater.inflate(R.layout.fragment_card_details, container, false)
 
-        textViewCardName = view.findViewById(R.id.textViewCardNameDetails)
-        textViewCardType = view.findViewById(R.id.textViewCardTypeDetails)
+        textViewCardName = view.findViewById(R.id.textName)
+        textViewCardType = view.findViewById(R.id.textType)
+        textViewCardCost = view.findViewById(R.id.textPropertiesCost)
+        textViewCardAttack = view.findViewById(R.id.textPropertiesAttack)
         imageViewCard = view.findViewById(R.id.imageViewCardDetails)
         btnFav = view.findViewById(R.id.btnAddToFavorites)
         userRepo = UserRepository()
@@ -70,18 +80,24 @@ class CardDetailsFragment : Fragment()  {
 
         auth = AuthManager(requireContext())
 
-
-
-        sharedViewModel.selectedCard?.observe(viewLifecycleOwner, Observer { selectedCard ->
+        sharedViewModel.selectedCardDeck?.observe(viewLifecycleOwner, Observer { selectedCard ->
             Log.d("CardDetailsFragment", "Selected Card: $selectedCard")
 
                 selectedCard?.let {
-                    textViewCardName.text = it.name
-                    textViewCardType.text = it.type
+                    textViewCardName.text = it.card.name
+                    textViewCardType.text = it.card.type
 
-                    if (it.img != null) {
+                    if (textViewCardCost.text != null){
+                        textViewCardCost.text = "Cost :" + it.card.cost.toString()
+                    }
+
+                    if (textViewCardAttack.text != null){
+                        textViewCardAttack.text = "Attack :" + it.card.attack.toString()
+                    }
+
+                    if (it.card.img != null) {
                         Glide.with(this)
-                            .load(it.img)
+                            .load(it.card.img)
                             .into(imageViewCard)
                     } else {
                         val randomImageName = imageNamess.random()
@@ -102,21 +118,34 @@ class CardDetailsFragment : Fragment()  {
                     lifecycleScope.launch {
                         val userId = userRepo.getUserId(username)
                         btnFav.setOnClickListener {
-                            lifecycleScope.launch {
-                                Log.d("on click favorite", "click $selectedCard")
-                                Toast.makeText(requireContext(), "Carte ajoutée aux favoris ", Toast.LENGTH_SHORT).show()
-                                decksViewModel.toggleFavoriteStatus3(selectedCard, userId)
+                            if (userId != null) {
+                                showConfirmationDialog(selectedCard.card, userId = userId )
                             }
+//                            lifecycleScope.launch {
+//                                Log.d("on click favorite", "click $selectedCard")
+//                                Toast.makeText(requireContext(), "Carte ajoutée aux favoris ", Toast.LENGTH_SHORT).show()
+//                                decksViewModel.toggleFavoriteStatus3(selectedCard, userId)
+//                            }
                         }
                     }
 
+                    val textToEncode = it.card.dbfId.toString()
+                    val textToEncodee = it.card.name
+                    val i = it.card.cardId.toString()
+                    val test =
+                        "https://omgvamp-hearthstone-v1.p.rapidapi.com/cards/$i/?rapidapi-key=83de557c75mshf10e086e2ef22f9p1eb351jsnebdd8be1665d"
+                    Log.d("test qr code id", "click $test")
 
+                    val testt =
+                        "https://omgvamp-hearthstone-v1.p.rapidapi.com/cards/search/$textToEncodee/?rapidapi-key=83de557c75mshf10e086e2ef22f9p1eb351jsnebdd8be1665d"
+                    Log.d("test qr code name", "click $testt")
+                    val qrCodeBitmap = generateQRCode(test)
+//                    val qrCodeBitmap = generateQRCode(textToEncodee)
 
-                    val textToEncode = it.dbfId.toString()
-                    val qrCodeBitmap = generateQRCode(textToEncode)
-
+//
                     val qrCodeImageView = view.findViewById<ImageView>(R.id.qrCodeImageView)
                     qrCodeImageView.setImageBitmap(qrCodeBitmap)
+
 
                 }
 
@@ -125,6 +154,33 @@ class CardDetailsFragment : Fragment()  {
 
 
         })
+    }
+
+    private fun showConfirmationDialog(decksCard: Card, userId : Long) {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Confirmation")
+        builder.setMessage("Voulez-vous supprimer cette carte de vos favoris?")
+        builder.setPositiveButton("Oui") { _, _ ->
+            val cardId = decksCard.cardId
+            decksViewModel.deleteCardFromDeck(userId, cardId)
+            // Naviguer en arrière ou vers un autre fragment après la suppression
+            findNavController().navigateUp()
+//            decksViewModel.delete(decksCard)
+            Toast.makeText(requireContext(), "Carte supprimée des favoris", Toast.LENGTH_SHORT).show()
+        }
+        builder.setNegativeButton("Non") { dialog, _ ->
+            dialog.dismiss() }
+        builder.show()
+    }
+
+    private fun removeCardFromFavoritesAndNavigateBack(card : Card, userId: String) {
+        val cardId = card.cardId// Obtenez l'ID de la carte à supprimer
+        val userId = userId// Obtenez l'ID de l'utilisateur
+
+            lifecycleScope.launch {
+//                decksViewModel.
+//                navigateBackToDecks()
+            }
     }
 
     fun generateQRCode(text: String): Bitmap {

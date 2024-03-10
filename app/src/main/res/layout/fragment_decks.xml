@@ -33,7 +33,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/titre"
         android:background="@android:color/transparent"
-        android:paddingBottom="40dp"
+        android:paddingBottom="80dp"
         />
 
     </LinearLayout>

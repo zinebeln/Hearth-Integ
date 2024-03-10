@@ -34,11 +34,20 @@ class DecksCardRepository() {
     suspend fun getFavoriteCards(): List<DecksCard> {
         return decksCardDao.getFavoriteCards()
     }
+
+    suspend fun getFavoriteCardsID(): List<DecksCard> {
+        return decksCardDao.getFavoriteCardsID()
+    }
     suspend fun addToFavorites(userId: Long, cardsId: String, card: Card) {
 
         if (decksCardDao.getDecksCardById(cardsId) == null) {
             val decksCard = DecksCard(userId = userId, cardsId = cardsId, card = card)
             insertDecksCard(decksCard)
         }
+    }
+
+    // Supprimer une carte des favoris pour un utilisateur spécifique
+    suspend fun removeFromDecks(userId: Long, cardId: String) {
+        decksCardDao.deleteUserCardCrossRef(userId, cardId)
     }
 }

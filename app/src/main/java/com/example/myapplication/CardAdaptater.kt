@@ -27,6 +27,7 @@ import com.example.myapplication.model.ViewModel.SharedViewModel
 class CardAdaptater : ListAdapter<Card, CardAdaptater.ViewHolder>(CardDiffCallback()) {
 
     private var onItem: OnItemClickListener? = null
+    var onStarClick: ((Card) -> Unit)? = null
 
     private val imageNamess =
         listOf("imagun", "imagedeux", "imagetrois", "imagecinq", "imagesix")
@@ -42,13 +43,13 @@ class CardAdaptater : ListAdapter<Card, CardAdaptater.ViewHolder>(CardDiffCallba
         val cardName: TextView = itemView.findViewById(R.id.textViewName)
         val cardType: TextView = itemView.findViewById(R.id.textViewType)
         val imageCard: ImageView = itemView.findViewById(R.id.imageViewCard)
+        val star : ImageView = itemView.findViewById(R.id.imageViewStar)
 
         init {
-            itemView.setOnClickListener {
+            star.setOnClickListener {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
-                    val card = getItem(position)
-                    onItem?.onItemClick(card)
+                    onStarClick?.invoke(getItem(position))
                 }
             }
         }
@@ -56,7 +57,6 @@ class CardAdaptater : ListAdapter<Card, CardAdaptater.ViewHolder>(CardDiffCallba
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-
         val itemView =
             LayoutInflater.from(parent.context).inflate(R.layout.item_card, parent, false)
         return ViewHolder(itemView)
@@ -67,6 +67,7 @@ class CardAdaptater : ListAdapter<Card, CardAdaptater.ViewHolder>(CardDiffCallba
         val card = getItem(position)
         holder.cardName.text = card.name
         holder.cardType.text = card.type
+       holder.star.setImageResource(if (card.isFavorite) R.drawable.star_rempli else R.drawable.star_vide)
 
         if (card.img != null) {
             Glide.with(holder.itemView)

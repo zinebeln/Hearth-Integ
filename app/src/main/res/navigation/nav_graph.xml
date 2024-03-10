@@ -72,6 +72,11 @@
     <action
         android:id="@+id/action_deckFragment_to_profilFragment"
         app:destination="@id/section3Fragment" />
+
+        <action
+            android:id="@+id/action_deckFragment_to_cardDetailFragment"
+            app:destination="@id/cardDetailsFragment" />
+
     </fragment>
 
     <fragment
@@ -129,5 +134,7 @@
     <action
         android:id="@+id/action_change_password_to_profil_fragment"
         app:destination="@id/section3Fragment" />
+
+
 
 </navigation>

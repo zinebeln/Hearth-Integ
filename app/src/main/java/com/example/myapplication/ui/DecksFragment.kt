@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import com.example.myapplication.model.DecksCard
 import com.example.myapplication.model.ViewModel.DecksViewModel
+import com.example.myapplication.model.ViewModel.SharedViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.launch
 
@@ -32,6 +33,7 @@ class DecksFragment : Fragment()  {
     private var previousFavoriteCardsSize = 0
     private var previousFavoriteCards: List<DecksCard> = emptyList()
     private val deckViewModel: DecksViewModel by viewModels()
+    private val sharedViewModel : SharedViewModel by activityViewModels ()
     private lateinit var decksAdapter: DecksAdapter
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,11 +43,28 @@ class DecksFragment : Fragment()  {
         val recyclerView = view.findViewById<RecyclerView>(R.id.decksRecyclerView)
         val bottomNavigationView = view.findViewById<BottomNavigationView>(R.id.bottomNavigationDecks)
 
+//        decksAdapter = DecksAdapter(object : DecksAdapter.OnItemClickListener {
+//            override fun onItemClicked(decksCard: DecksCard) {
+//              //  showConfirmationDialog(decksCard)
+//               findNavController().navigate(R.id.action_deckFragment_to_cardDetailFragment)
+//            }
+//        })
+
         decksAdapter = DecksAdapter(object : DecksAdapter.OnItemClickListener {
             override fun onItemClicked(decksCard: DecksCard) {
-                showConfirmationDialog(decksCard)
+                // Votre logique de clic
+                sharedViewModel.selectCardDeck(decksCard)
+                findNavController().navigate(R.id.action_deckFragment_to_cardDetailFragment)
             }
         })
+
+//        decksAdapter.setOnItemClickListener(object : DecksAdapter.OnItemClickListener {
+//            override fun onItemClicked(card: DecksCard) {
+//                sharedViewModel.selectCardDeck(card)
+//               findNavController().navigate(R.id.action_cardFragment_to_cardDetailsFragment)
+//            }
+//        })
+
         val auth = AuthManager(requireContext())
         deckViewModel.init(auth)
         recyclerView.adapter = decksAdapter
