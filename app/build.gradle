@@ -17,15 +17,29 @@ android {
     compileSdk 34
 
     flavorDimensions += "env"
+//    flavorDimensions "default"
     productFlavors {
 
         dev {
+//            dimension "default"
+//            applicationIdSuffix ".dev"
+//            versionNameSuffix "-dev"
             dimension "env"
             //applicationIdSuffix ".demo"
             versionNameSuffix ".demo"
             buildConfigField("String", "popo", "\"API-keyvalue\"")
 
         }
+
+//        recette {
+//            dimension "default"
+//            applicationIdSuffix ".recette"
+//            versionNameSuffix "-recette"
+//        }
+//        prod {
+//            dimension "default"
+//            // Pas de suffixe pour la version de production
+//        }
 
         tintin {
             dimension "env"
