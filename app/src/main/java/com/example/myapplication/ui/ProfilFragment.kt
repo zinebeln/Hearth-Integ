@@ -9,6 +9,7 @@ import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
@@ -42,6 +43,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
@@ -91,6 +93,8 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
         mapFragment.getMapAsync(this)
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this.requireActivity())
+
+        imageProfile.setImageResource(R.drawable.ic_profil)
 
         val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
         val username = sharedPref.getString("username", "") ?: ""
@@ -167,9 +171,11 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
         }
 
         viewModel.getUserImageUri(username).observe(viewLifecycleOwner) { uri ->
+
             uri?.let {
                 loadImageFromPath(it)
             }
+
         }
 
        viewModel.imageUri.observe(viewLifecycleOwner) { uri ->
@@ -272,6 +278,8 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
                     this.requireContext(),
                     "${this.requireContext().packageName}.provider", it
                 )
+
+
                 Log.d("open uri", "Path: ${photoURI}")
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
                 startActivityForResult(intent, 2)
@@ -300,6 +308,7 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        Log.d("on act result", "tst ${data}")
         if (requestCode == 1 && resultCode == Activity.RESULT_OK && data != null) {
             val selectedImageUri = data.data
             Log.d("Saved on act data", "Path: ${data.data}")
@@ -309,12 +318,24 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
                 viewModel.setImageUri(it.toString())
                 Log.d("Saved on act", "Path: ${it}")
             }
-        } else if (requestCode == 2 && data != null) {
-            val photo = data.extras?.get("data") as Bitmap
-            val savedUri = saveImageToInternalStorage(photo)
+        }
+        if (requestCode == 2 && resultCode == Activity.RESULT_OK ) {
+//            val photo = data.extras?.get("data") as Bitmap
+//            val savedUri = saveImageToInternalStorage(photo)
+            val savedUri = Uri.parse(imageUri)
+            Log.d("on act result", "tst ${savedUri}")
             savedUri?.let {
-                imageUri = it.toString()
+                loadImageFromPath(it.toString())
+//                imageUri = it.toString()
                 viewModel.setImageUri(it.toString())
+                val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
+                val username = sharedPref.getString("username", "") ?: ""
+                lifecycleScope.launch {
+                    val userId = viewModel.getId(username)
+                    viewModel.updateProfileImage(userId, it.toString())
+                    Log.d("Saved on viewmodel", "Path: ${it.toString()}")
+                }
+
                 Log.d("Saved on act", "Path: ${it}")
             }
         }
@@ -375,6 +396,8 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
             if(location != null) {
                 lastLocation = location
                 val currentLatLng = LatLng(location.latitude, location.longitude)
+                val positionStore = LatLng(45.7613283, 4.8559034)
+                placeMarkerOnMapStore(positionStore)
                 placeMarkerOnMap(currentLatLng)
                 mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 12f))
 
@@ -386,6 +409,13 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
         val markerOptions = MarkerOptions().position(currentLatLng)
         markerOptions.title("My position")
         mGoogleMap.addMarker(markerOptions)
+    }
+    private fun placeMarkerOnMapStore(currentLatLng: LatLng) {
+        val markerOptions = MarkerOptions().position(currentLatLng)
+            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+        markerOptions.title("Store of HearthStone")
+        mGoogleMap.addMarker(markerOptions)
+
     }
 
     private fun saveImageFromUri(uri: Uri): String? {

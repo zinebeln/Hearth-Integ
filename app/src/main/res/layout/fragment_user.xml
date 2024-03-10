@@ -1,79 +1,225 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
+
+<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    >-->
+
+<!--    <ImageView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--       -->
+<!--        android:src="@drawable/register"-->
+<!--        android:scaleType="centerCrop"-->
+<!--        android:contentDescription="@null"-->
+<!--        android:background="@android:color/black"/>-->
 
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:src="@drawable/register"
         android:scaleType="centerCrop"
         android:contentDescription="@null"
-        android:background="@android:color/black"/>
-
-    <LinearLayout
-        android:id="@+id/btn"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="340dp"
-            android:layout_marginBottom="1dp"
-            android:src="@drawable/titre" />
-
-        <EditText
-            android:id="@+id/etUsername"
-            android:layout_width="247dp"
-            android:layout_height="45dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginTop="16dp"
-            android:layout_marginLeft="65dp"
-            android:background="@drawable/rounded_edittext_style"
-            android:drawableLeft="@drawable/baseline_account_box_24"
-            android:drawablePadding="8dp"
-            android:hint="Nom d'utilisateur"
-            android:inputType="text"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp" />
-
-        <EditText
-            android:id="@+id/etPassword"
-            android:layout_width="247dp"
-            android:layout_height="45dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginLeft="65dp"
-            android:layout_marginBottom="35dp"
-            android:background="@drawable/rounded_edittext_style"
-            android:drawableLeft="@drawable/baseline_lock_24"
-            android:hint="Mot de passe"
-            android:drawablePadding="8dp"
-            android:inputType="textPassword"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp" />
-
-        <Button
-            android:id="@+id/btnLogin"
-            android:layout_width="350dp"
-            android:layout_marginLeft="18dp"
-            android:layout_marginBottom="16dp"
-            android:layout_height="wrap_content"
-            android:text="Se connecter"
-            android:background="@drawable/rounded_button_background"
-            />
-
-        <Button
-            android:id="@+id/btnCreateAccount"
-            android:layout_width="350dp"
-            android:layout_marginLeft="18dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/rounded_button_background"
-            android:layout_height="wrap_content"
-            android:text="Creer un compte" />
+        android:background="@android:color/black"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 
-    </LinearLayout>
-</RelativeLayout>
+<!--    <LinearLayout-->
+<!--        android:id="@+id/btn"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:orientation="vertical">-->
 
+    <ImageView
+        android:id="@+id/imageViewTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:src="@drawable/titre"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.35"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/top_guidelineEdit2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.37" />
+
+    <EditText
+        android:id="@+id/etUsername"
+        android:layout_width="0dp"
+
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/rounded_edittext_style"
+        android:drawableLeft="@drawable/baseline_account_box_24"
+        android:drawablePadding="8dp"
+        android:hint="Nom d'utilisateur"
+        android:inputType="text"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        app:layout_constraintTop_toBottomOf="@id/top_guidelineEdit2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.70"
+        app:layout_constraintHeight_percent="0.07"
+        />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/top_guidelineEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.45" />
+
+    <EditText
+        android:id="@+id/etPassword"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/rounded_edittext_style"
+        android:drawableLeft="@drawable/baseline_lock_24"
+        android:hint="Mot de passe"
+        android:drawablePadding="8dp"
+        android:inputType="textPassword"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        app:layout_constraintTop_toBottomOf="@id/top_guidelineEdit"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.70"
+        app:layout_constraintHeight_percent="0.07"
+        />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/start_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.2" /> <!-- 10% margin from start -->
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/end_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.8" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/top_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.35" /> <!-- 10% margin from top -->
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/bottom_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.9" />
+
+    <Button
+        android:id="@+id/btnLogin"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Se connecter"
+        app:layout_constraintStart_toStartOf="@id/start_guideline"
+        app:layout_constraintEnd_toEndOf="@id/end_guideline"
+        app:layout_constraintTop_toBottomOf="@id/top_guideline"
+        app:layout_constraintBottom_toTopOf="@id/bottom_guideline"
+        android:background="@drawable/rounded_button_background"
+
+        app:layout_constraintWidth_percent="0.8"/>
+
+    <Button
+        android:id="@+id/btnCreateAccount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Creer un compte"
+        android:background="@drawable/rounded_button_background"
+
+        app:layout_constraintTop_toBottomOf="@id/btnLogin"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.8"/>
+
+
+
+
+
+<!--        <ImageView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="340dp"-->
+<!--            android:layout_marginBottom="1dp"-->
+<!--            android:src="@drawable/titre" />-->
+
+<!--        <EditText-->
+<!--            android:id="@+id/etUsername"-->
+<!--            android:layout_width="247dp"-->
+<!--            android:layout_height="45dp"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:layout_marginTop="16dp"-->
+<!--            android:layout_marginLeft="65dp"-->
+<!--            android:background="@drawable/rounded_edittext_style"-->
+<!--            android:drawableLeft="@drawable/baseline_account_box_24"-->
+<!--            android:drawablePadding="8dp"-->
+<!--            android:hint="Nom d'utilisateur"-->
+<!--            android:inputType="text"-->
+<!--            android:paddingStart="16dp"-->
+<!--            android:paddingEnd="16dp" />-->
+
+<!--        <EditText-->
+<!--            android:id="@+id/etPassword"-->
+<!--            android:layout_width="247dp"-->
+<!--            android:layout_height="45dp"-->
+<!--            android:layout_marginTop="16dp"-->
+<!--            android:layout_marginLeft="65dp"-->
+<!--            android:layout_marginBottom="35dp"-->
+<!--            android:background="@drawable/rounded_edittext_style"-->
+<!--            android:drawableLeft="@drawable/baseline_lock_24"-->
+<!--            android:hint="Mot de passe"-->
+<!--            android:drawablePadding="8dp"-->
+<!--            android:inputType="textPassword"-->
+<!--            android:paddingStart="16dp"-->
+<!--            android:paddingEnd="16dp" />-->
+
+<!--        <Button-->
+<!--            android:id="@+id/btnLogin"-->
+<!--            android:layout_width="350dp"-->
+<!--            android:layout_marginLeft="18dp"-->
+<!--            android:layout_marginBottom="16dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Se connecter"-->
+<!--            android:background="@drawable/rounded_button_background"-->
+<!--            />-->
+
+<!--        <Button-->
+<!--            android:id="@+id/btnCreateAccount"-->
+<!--            android:layout_width="350dp"-->
+<!--            android:layout_marginLeft="18dp"-->
+<!--            android:layout_marginBottom="16dp"-->
+<!--            android:background="@drawable/rounded_button_background"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Creer un compte" />-->
+
+
+<!--    </LinearLayout>-->
+<!--</RelativeLayout>-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>

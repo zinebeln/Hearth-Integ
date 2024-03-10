@@ -12,38 +12,96 @@
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:padding="18dp"-->
+<!--        >-->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="18dp"
-        >
+        android:padding="18dp">
+
+<!--        <ImageView-->
+<!--            android:id="@+id/decksImageView"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="150dp"-->
+<!--            android:scaleType="centerCrop"-->
+<!--            android:contentDescription="@string/card_image" />-->
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineTop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineBottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.6" />
 
         <ImageView
             android:id="@+id/decksImageView"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:scaleType="centerCrop"
-            android:contentDescription="@string/card_image" />
+            android:contentDescription="@string/card_image"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/guidelineBottom"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <TextView
             android:id="@+id/decksTextName"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_below="@id/decksImageView"
             android:text="@string/card_name"
             android:textSize="18sp"
             android:textColor="@android:color/black"
+            app:layout_constraintTop_toBottomOf="@id/decksImageView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="10dp"/>
 
         <TextView
             android:id="@+id/decksTextType"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_below="@id/decksTextName"
             android:text="@string/card_type"
             android:textSize="14sp"
             android:textColor="@color/colorSelected"
+            app:layout_constraintTop_toBottomOf="@id/decksTextName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="5dp"/>
 
-    </RelativeLayout>
+
+
+<!--        <TextView-->
+<!--            android:id="@+id/decksTextName"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_below="@id/decksImageView"-->
+<!--            android:text="@string/card_name"-->
+<!--            android:textSize="18sp"-->
+<!--            android:textColor="@android:color/black"-->
+<!--            android:layout_marginTop="10dp"/>-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/decksTextType"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_below="@id/decksTextName"-->
+<!--            android:text="@string/card_type"-->
+<!--            android:textSize="14sp"-->
+<!--            android:textColor="@color/colorSelected"-->
+<!--            android:layout_marginTop="5dp"/>-->
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+<!--    </RelativeLayout>-->
 </androidx.cardview.widget.CardView>

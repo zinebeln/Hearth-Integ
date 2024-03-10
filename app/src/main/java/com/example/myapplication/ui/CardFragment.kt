@@ -41,6 +41,8 @@ class CardFragment : Fragment() {
     private lateinit var progressBar: ProgressBar
     private lateinit var adapter: CardAdaptater
     private lateinit var networkChangeReceiver: NetworkChangeReceiver
+    private var isReceiverRegistered = false
+
     private lateinit var intentFilter: IntentFilter
     private lateinit var binding: FragmentCardBinding
     private lateinit var userRepository: UserRepository
@@ -115,8 +117,8 @@ class CardFragment : Fragment() {
         }
 
         networkChangeReceiver = NetworkChangeReceiver()
-        intentFilter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
-        requireContext().registerReceiver(networkChangeReceiver, intentFilter)
+//        intentFilter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+//        requireContext().registerReceiver(networkChangeReceiver, intentFilter)
 
         val bottomNavigationView = rootView.findViewById<BottomNavigationView>(R.id.bottomNavigation)
         val navController = findNavController()
@@ -159,6 +161,23 @@ class CardFragment : Fragment() {
                 true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (!isReceiverRegistered) {
+            val intentFilter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+            requireContext().registerReceiver(networkChangeReceiver, intentFilter)
+            isReceiverRegistered = true
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (isReceiverRegistered) {
+            requireContext().unregisterReceiver(networkChangeReceiver)
+            isReceiverRegistered = false
         }
     }
 

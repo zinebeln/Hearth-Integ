@@ -59,14 +59,14 @@ class DecksViewModel (private val decksRepository: DecksCardRepository, private 
             _cardDeletedEvent.value = Unit
         }
     }
-    fun getFavCardID() : List<DecksCard> {
-
-        viewModelScope.launch {
-          list =  decksRepository.getFavoriteCardsID()
-        }
-
-        return list ;
-    }
+//    fun getFavCardID() : List<DecksCard> {
+//
+//        viewModelScope.launch {
+//          list =  decksRepository.getFavoriteCardsID()
+//        }
+//
+//        return list ;
+//    }
 
     fun deleteCardFromDeck(userId: Long, cardId: String) {
 

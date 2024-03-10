@@ -35,9 +35,9 @@ class DecksCardRepository() {
         return decksCardDao.getFavoriteCards()
     }
 
-    suspend fun getFavoriteCardsID(): List<DecksCard> {
-        return decksCardDao.getFavoriteCardsID()
-    }
+//    suspend fun getFavoriteCardsID(): List<DecksCard> {
+//        return decksCardDao.getFavoriteCardsID()
+//    }
     suspend fun addToFavorites(userId: Long, cardsId: String, card: Card) {
 
         if (decksCardDao.getDecksCardById(cardsId) == null) {
