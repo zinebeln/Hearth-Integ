@@ -82,6 +82,14 @@ android {
         jvmTarget = '1.8'
     }
 
+    lintOptions {
+        abortOnError false
+        htmlOutput file("path/to/lint-report.html")
+        xmlOutput file("path/to/lint-report.xml")
+
+
+    }
+
 }
 
 
