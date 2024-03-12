@@ -14,23 +14,10 @@
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp">
 
-<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--    android:layout_width="match_parent"-->
-<!--    android:layout_height="wrap_content"-->
-<!--    android:padding="16dp">-->
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp">
-
-<!--<ImageView-->
-<!--android:id="@+id/imageViewCard"-->
-<!--android:layout_width="match_parent"-->
-<!--android:layout_height="150dp"-->
-<!--android:scaleType="centerCrop"-->
-<!--    android:background="@drawable/carde"-->
-<!--    android:contentDescription="@string/card_image" />-->
 
         <ImageView android:id="@+id/imageViewCard"
             android:layout_width="0dp"
@@ -75,39 +62,7 @@
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="5dp"/>
 
-<!--<TextView-->
-<!--android:id="@+id/textViewName"-->
-<!--android:layout_width="match_parent"-->
-<!--android:layout_height="wrap_content"-->
-<!--android:layout_below="@id/imageViewCard"-->
-<!--android:text="@string/card_name"-->
-<!--android:textSize="18sp"-->
-<!--android:textColor="@android:color/black"-->
-<!--android:layout_marginTop="8dp"/>-->
-
-<!--<TextView-->
-<!--android:id="@+id/textViewType"-->
-<!--android:layout_width="match_parent"-->
-<!--android:layout_height="wrap_content"-->
-<!--android:layout_below="@id/textViewName"-->
-<!--android:text="@string/card_type"-->
-<!--android:textSize="14sp"-->
-<!--android:textColor="@android:color/darker_gray"-->
-<!--android:layout_marginTop="4dp"/>-->
-
-
-<!--    <ImageView android:id="@+id/imageViewStar"-->
-<!--        android:layout_width="20dp"-->
-<!--        android:layout_height="20dp"-->
-<!--        android:layout_alignParentEnd="true"-->
-<!--        android:layout_alignParentBottom="true"-->
-<!--        android:layout_marginEnd="10dp"-->
-<!--        android:layout_marginBottom="5dp"-->
-<!--        android:src="@drawable/star_vide"-->
-<!--       />-->
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-<!--</RelativeLayout>-->
+
 </androidx.cardview.widget.CardView>
 

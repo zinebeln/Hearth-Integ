@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myapplication.R
 import com.example.myapplication.domain.repository.UserRepository
 import com.example.myapplication.model.ProfilView
 import kotlinx.coroutines.launch
@@ -54,7 +55,9 @@ class ProfilViewModel(private val userRepository: UserRepository) : ViewModel() 
         return userRepository.getProfileImagePaths(userId)
     }
     fun setImageUri(uri: String) {
-        _imageUri.value = uri
+            _imageUri.value = uri
+
+
     }
 
     suspend fun getId(user : String ) : Long {

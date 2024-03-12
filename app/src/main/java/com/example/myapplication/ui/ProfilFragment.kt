@@ -94,8 +94,6 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this.requireActivity())
 
-        imageProfile.setImageResource(R.drawable.ic_profil)
-
         val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
         val username = sharedPref.getString("username", "") ?: ""
         textUsername.text = username
@@ -144,7 +142,6 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
         }
 
         view.findViewById<Button>(R.id.btnAddPhoto).setOnClickListener {
-//            openImagePicker()
             val galleryIntent =
                 Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             startActivityForResult(galleryIntent, 1)
@@ -153,15 +150,14 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
                 try {
                     val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
                     val username = sharedPref.getString("username", "") ?: ""
-                    Log.d("Saved  uriii ", "Path: ${imageUri}")
                     val userId = viewModel.getId(username)
                     if (userId != null && imageUri != null) {
                         viewModel.updateProfileImage(userId!!, imageUri!!)
                     } else {
-                        Log.d("erreur", "Path: ")
+                        Log.d("erreur", "addBtnPhoto")
                     }
                 } catch (e: Exception) {
-                    Log.d("execption", "Path: ${e}")
+                    Log.d("execption", "Execption: ${e}")
                 }
             }
         }
@@ -171,14 +167,15 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
         }
 
         viewModel.getUserImageUri(username).observe(viewLifecycleOwner) { uri ->
-
             uri?.let {
                 loadImageFromPath(it)
             }
-
+            imageProfile.setImageResource(R.drawable.ic_profil)
         }
 
        viewModel.imageUri.observe(viewLifecycleOwner) { uri ->
+
+
             uri?.let {
                 Log.d("Saved", "Path: ${uri}")
                 lifecycleScope.launch {
@@ -263,70 +260,37 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
     private fun openCamera() {
 
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        Log.d("open", "dans open ${intent}")
         if (intent.resolveActivity(requireActivity().packageManager) != null) {
-            Log.d("open if", "dans open")
             val photoFile: File? = try {
                 createImageFile()
             } catch (ex: IOException) {
                 Log.d("execption", "Path: ${ex}")
                 null
             }
-            Log.d("open photo", "dans open ${photoFile}")
             photoFile?.also {
                 val photoURI: Uri = FileProvider.getUriForFile(
                     this.requireContext(),
                     "${this.requireContext().packageName}.provider", it
                 )
-
-
-                Log.d("open uri", "Path: ${photoURI}")
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
                 startActivityForResult(intent, 2)
             }
         }
     }
-
-
-    private fun saveImageToInternalStorage(bitmap: Bitmap): Uri? {
-        val wrapper = ContextWrapper(this.requireContext())
-
-        var file = wrapper.getDir("images", Context.MODE_PRIVATE)
-        file = File(file, "${UUID.randomUUID()}.jpg")
-
-        try {
-            val stream: OutputStream = FileOutputStream(file)
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-            stream.flush()
-            stream.close()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        return Uri.parse(file.absolutePath)
-    }
-
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        Log.d("on act result", "tst ${data}")
         if (requestCode == 1 && resultCode == Activity.RESULT_OK && data != null) {
             val selectedImageUri = data.data
-            Log.d("Saved on act data", "Path: ${data.data}")
             selectedImageUri?.let {
-
                 imageUri = it.toString()
                 viewModel.setImageUri(it.toString())
-                Log.d("Saved on act", "Path: ${it}")
             }
         }
         if (requestCode == 2 && resultCode == Activity.RESULT_OK ) {
-//            val photo = data.extras?.get("data") as Bitmap
-//            val savedUri = saveImageToInternalStorage(photo)
             val savedUri = Uri.parse(imageUri)
             Log.d("on act result", "tst ${savedUri}")
             savedUri?.let {
                 loadImageFromPath(it.toString())
-//                imageUri = it.toString()
                 viewModel.setImageUri(it.toString())
                 val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
                 val username = sharedPref.getString("username", "") ?: ""
@@ -335,41 +299,16 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
                     viewModel.updateProfileImage(userId, it.toString())
                     Log.d("Saved on viewmodel", "Path: ${it.toString()}")
                 }
-
-                Log.d("Saved on act", "Path: ${it}")
             }
         }
     }
 
-
     private fun showUserLocationOnMap(latitude: Double, longitude: Double) {
-    Timber.tag("coord show").d("coord " + longitude + ")")
         val userLatLng = LatLng(latitude, longitude)
     mGoogleMap?.addMarker(MarkerOptions().position(userLatLng).title("Votre position"))
     mGoogleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 15f)) // Zoom sur la position de l'utilisateur
     }
 
-    @SuppressLint("RestrictedApi")
-    private fun getCurrentLocationn() {
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            fusedLocationProviderClient.lastLocation
-                .addOnSuccessListener { location: Location? ->
-                    location?.let {
-                        val latitude = it.latitude
-                        val longitude = it.longitude
-                        Timber.tag("coord").d("coord " + longitude + ")")
-                        showUserLocationOnMap(latitude, longitude)
-                    }
-                }
-                .addOnFailureListener { e ->
-                    Timber.tag(TAG).e("Erreur lors de l'obtention de la localisation: " + e.message)
-                }
-        }
-    }
     @SuppressLint("RestrictedApi")
     override fun onMapReady(googleMap: GoogleMap) {
         mGoogleMap = googleMap
@@ -392,7 +331,6 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
         mGoogleMap.isMyLocationEnabled = true
         fusedLocationProviderClient.lastLocation.addOnSuccessListener(this.requireActivity()) {
             location ->
-            Log.d("coooord", "test"+ location + "test")
             if(location != null) {
                 lastLocation = location
                 val currentLatLng = LatLng(location.latitude, location.longitude)
@@ -444,13 +382,9 @@ class ProfilFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickLi
            Log.d("Image Loading", "Chargement de l'image à partir du chemin : $imagePath")
         } else {
             Log.e("Image Loading", "Le chemin de l'image est vide.")
+            imageProfile.setImageResource(R.drawable.ic_profil)
+            imageProfile.visibility = View.VISIBLE
         }
-    }
-
-    private fun openImagePicker() {
-        val galleryIntent = Intent(Intent.ACTION_GET_CONTENT)
-        galleryIntent.type = "image/*"
-        startActivityForResult(galleryIntent, 1)
     }
 
     private fun deconnexionUtilisateur() {

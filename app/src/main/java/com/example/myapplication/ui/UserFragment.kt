@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 
 import androidx.fragment.app.viewModels
@@ -37,6 +38,8 @@ class UserFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         authViewModel.userLoggedIn.observe(viewLifecycleOwner, Observer { userLoggedIn ->
 
             Log.d("UserFragment", "User logged in: $userLoggedIn")

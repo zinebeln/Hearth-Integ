@@ -10,21 +10,35 @@
         android:id="@+id/userFragment"
         android:name="com.example.myapplication.ui.UserFragment"
         android:label="Authentification"
-        tools:layout="@layout/fragment_user" />
+        tools:layout="@layout/fragment_user" >
+        <action
+            android:id="@+id/action_userFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
+
+    </fragment>
+
+
+    <action
+        android:id="@+id/action_userFragment_to_cardFragment"
+        app:destination="@id/cardFragment"
+        app:popUpTo="@id/userFragment"
+        app:popUpToInclusive="true" />
 
     <fragment
         android:id="@+id/signUpFragment"
         android:name="com.example.myapplication.ui.SignUpFragment"
         android:label="Sign Up"
-        tools:layout="@layout/fragment_sign_up" />
+        tools:layout="@layout/fragment_sign_up">
 
-    <action
-        android:id="@+id/action_userFragment_to_signUpFragment"
-        app:destination="@id/signUpFragment" />
 
-    <action
-        android:id="@+id/action_signUpFragment_to_userFragment"
-        app:destination="@id/userFragment" />
+
+                <action
+                    android:id="@+id/action_signUpFragment_to_userFragment"
+                    app:destination="@id/userFragment" />
+    </fragment>
+
+
+
 
     <fragment
         android:id="@+id/cardFragment"
@@ -32,20 +46,28 @@
         android:label="Cards"
         tools:layout="@layout/fragment_card" >
 
-        <action
-            android:id="@+id/action_cardFragment_self"
-            app:destination="@id/cardFragment" />
-        <action
-            android:id="@+id/action_cardFragment_to_deckFragment"
-            app:destination="@id/section2Fragment" />
-        <action
-            android:id="@+id/action_cardFragment_to_profilFragment"
-            app:destination="@id/section3Fragment" />
-        <action
-            android:id="@+id/action_cardFragment_to_cardDetailsFragment"
-            app:destination="@id/cardDetailsFragment">
+                <action
+                    android:id="@+id/action_cardFragment_self"
+                    app:destination="@id/cardFragment" />
+                <action
+                    android:id="@+id/action_cardFragment_to_deckFragment"
+                    app:destination="@id/section2Fragment" />
+                <action
+                    android:id="@+id/action_cardFragment_to_profilFragment"
+                    app:destination="@id/section3Fragment" />
+                <action
+                    android:id="@+id/action_cardFragment_to_cardDetailsFragment"
+                    app:destination="@id/cardDetailsFragment"/>
+                <action
+                    android:id="@+id/action_cardFragment_to_section3Fragment"
+                    app:destination="@id/section3Fragment" />
+                <action
+                    android:id="@+id/action_cardFragment_to_cardFragment"
+                    app:destination="@id/cardFragment" />
+                <action
+                    android:id="@+id/action_cardFragment_to_section2Fragment"
+                    app:destination="@id/section2Fragment" />
 
-        </action>
     </fragment>
 
 
@@ -66,16 +88,18 @@
         <action
             android:id="@+id/action_decksFragment_self"
             app:destination="@id/section2Fragment" />
-    <action
-        android:id="@+id/action_deckFragment_to_cardFragment"
-        app:destination="@id/cardFragment" />
-    <action
-        android:id="@+id/action_deckFragment_to_profilFragment"
-        app:destination="@id/section3Fragment" />
-
+        <action
+            android:id="@+id/action_deckFragment_to_cardFragment"
+            app:destination="@id/cardFragment" />
+        <action
+            android:id="@+id/action_deckFragment_to_profilFragment"
+            app:destination="@id/section3Fragment" />
         <action
             android:id="@+id/action_deckFragment_to_cardDetailFragment"
             app:destination="@id/cardDetailsFragment" />
+        <action
+            android:id="@+id/action_open_decks_fragment"
+            app:destination="@id/section2Fragment" />
 
     </fragment>
 
@@ -93,12 +117,12 @@
         <action
             android:id="@+id/action_profilFragment_self"
             app:destination="@id/section3Fragment" />
-    <action
-        android:id="@+id/action_profilFragment_to_cardFragment"
-        app:destination="@id/cardFragment" />
-    <action
-        android:id="@+id/action_profilFragment_to_deckFragment"
-        app:destination="@id/section2Fragment" />
+        <action
+            android:id="@+id/action_profilFragment_to_cardFragment"
+            app:destination="@id/cardFragment" />
+        <action
+            android:id="@+id/action_profilFragment_to_deckFragment"
+            app:destination="@id/section2Fragment" />
         <action
             android:id="@+id/action_profilFragment_to_userFragment"
             app:destination="@id/userFragment" />
@@ -108,28 +132,13 @@
 
     </fragment>
 
-    <action
-        android:id="@+id/action_userFragment_to_cardFragment"
-        app:destination="@id/cardFragment"
-        app:popUpTo="@id/userFragment"
-        app:popUpToInclusive="true" />
-
-    <action
-        android:id="@+id/action_cardFragment_to_cardFragment"
-        app:destination="@id/cardFragment" />
 
 
-    <action
-        android:id="@+id/action_cardFragment_to_section2Fragment"
-        app:destination="@id/section2Fragment" />
 
-    <action
-        android:id="@+id/action_cardFragment_to_section3Fragment"
-        app:destination="@id/section3Fragment" />
 
-    <action
-        android:id="@+id/action_open_decks_fragment"
-        app:destination="@id/section2Fragment" />
+
+
+
 
     <action
         android:id="@+id/action_change_password_to_profil_fragment"
